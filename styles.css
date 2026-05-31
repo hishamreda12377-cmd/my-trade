@@ -1,5 +1,5 @@
 body {
-    background-image: url(https://thf.bing.com/th/id/OIP.9kkIwwmaLBI17yUDnQgqGwHaFU?r=0&cb=thfc1falcon&rs=1&pid=ImgDetMain&o=7&rm=3);
+    background-color:#fdfbf7;
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
@@ -54,9 +54,24 @@ h1.welcom {
     justify-content: center;
     font-size: 36px;
     text-shadow: 2px 2px 4px black;
-    margin-bottom: 4.5rem;
     border: 3px solid black;
     max-width: 400px;
+    justify-self: center;
+    background-color: rgb(235, 219, 219);
+    box-shadow: 4px 2px 5px black;
+    border-radius: 10px;
+    color: rgb(44, 39, 39);  
+    padding: 1rem;
+}
+
+h1.w {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    text-shadow: 2px 2px 4px black;
+    margin-bottom: 4.5rem;
+    border: 3px solid black;
     justify-self: center;
     background-color: rgb(235, 219, 219);
     box-shadow: 4px 2px 5px black;
@@ -234,8 +249,8 @@ footer {
     position: fixed; 
     width: 60px;
     height: 60px;
-    bottom: 20px; 
-    right: 20px; 
+    bottom: 50px; 
+    right: 40px; 
     background-color: #25d366;
     border-radius: 50%;
     text-align: center;
@@ -258,8 +273,8 @@ footer {
 }
 .cart-float {
     position: fixed;
-    bottom: 90px;  
-    right: 20px;  
+    bottom: 120px;  
+    right: 40px;  
     width: 60px;
     height: 60px;
     background-color: #ff9800;
