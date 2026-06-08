@@ -257,6 +257,7 @@ function zoomImage(imgSrc) {
 }
 
 
+
 // تفعيل الـ Service Worker
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js');
@@ -278,10 +279,11 @@ function toggleMenu() {
 }
 
 // دالة التكبير المحدثة
+// الدالة النهائية والموحدة لتكبير الصورة
 function zoomImage(imgSrc) {
     let menu = document.getElementById("side-menu");
     
-    // شرط ذكي: إذا كانت القائمة مفتوحة، لا تفعل شيئاً (توقف الدالة)
+    // إذا كانت القائمة مفتوحة، لا تكبّر الصورة
     if (menu.style.width === "250px") {
         return; 
     }
@@ -291,5 +293,15 @@ function zoomImage(imgSrc) {
     
     zoomedImg.src = imgSrc;
     modal.style.display = 'flex';
+    
+    // تجميد السكرول
     document.body.style.overflow = 'hidden'; 
+}
+
+// دالة الإغلاق (تأكد من ربطها بالـ modal في الـ HTML)
+function closeZoom() {
+    document.getElementById('zoom-modal').style.display = 'none';
+    
+    // تفعيل السكرول مرة أخرى
+    document.body.style.overflow = 'auto'; 
 }
