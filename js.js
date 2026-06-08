@@ -5,10 +5,14 @@ let wishlist = JSON.parse(localStorage.getItem('myWishlist')) || [];
 // --- تحميل البيانات عند فتح الصفحة ---
 window.onload = function() {
     let savedCart = localStorage.getItem('myCart');
+    
+    // إذا كانت هناك بيانات نحملها، وإذا لم توجد نترك السلة فارغة كما هي
     if (savedCart) {
         cart = JSON.parse(savedCart);
-        updateCartUI(); 
     }
+    
+    // الأهم: استدعاء الدالة دائماً ليتم فحص السلة وإظهار الرسالة لو كانت فارغة
+    updateCartUI(); 
 };
 
 // --- وظائف السلة ---
@@ -163,7 +167,11 @@ window.onscroll = () => {
 function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
+// للتأكد من إخفاء الزر فور تحميل الصفحة
+document.addEventListener("DOMContentLoaded", () => {
+    let btn = document.getElementById("backToTop");
+    if (btn) btn.style.display = "none";
+});
 
 // حفظ البيانات في LocalStorage
 // --- وظيفة حفظ البيانات مع التحقق ---
