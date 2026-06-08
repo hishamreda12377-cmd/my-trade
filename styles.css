@@ -486,11 +486,13 @@ dialog::backdrop {
     display: flex;
     justify-content: center;
     align-items: center;
+    display: none; /* هذا السطر هو الأهم: اجعله مخفياً دائماً عند تحميل الصفحة */
 }
 
 #backToTop:hover {
     background-color: #cc1b1b;
 }
+
 
 
 
