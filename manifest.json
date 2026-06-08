@@ -1,0 +1,8 @@
+{
+  "name": "متجر الشرقاوي",
+  "short_name": "الشرقاوي",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f11515",
+  "theme_color": "#f11515"
+}
