@@ -1,0 +1,15 @@
+{
+  "name": "متجر الشرقاوي",
+  "short_name": "الشرقاوي",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f11515",
+  "icons": [
+    {
+      "src": "https://thf.bing.com/th/id/OIP.9kkIwwmaLBI17yUDnQgqGwHaFU?r=0",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
