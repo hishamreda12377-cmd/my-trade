@@ -8,7 +8,7 @@
     <meta name="keywords" content="حلويات، الشرقاوي، متجر، طلبات، تسوق اونلاين">
     <link rel="stylesheet" href="styles.css?v=1.1">
     <link rel="stylesheet" href="dark.css?v=1.1">
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -20,6 +20,16 @@
         <a class="a" href="#" onclick="document.getElementById('profile-modal').showModal()">بياناتي</a>
         <a class="a" href="#" onclick="document.getElementById('phoneWindow').showModal()">اتصل بنا</a>
         <a class="a" href="https://wa.me/201281525050" target="_blank">واتساب</a>
+        <a class="a" href="#" onclick="openFilterModal()">فرز المنتجات</a>
+
+<dialog id="filter-modal" class="custom-modal">
+    <button class="close-modal-btn" onclick="document.getElementById('filter-modal').close()">×</button>
+    <h3>📂 فرز المنتجات</h3>
+    <button class="filter-btn" onclick="filterByCategory('all')">كل المنتجات</button>
+    <button class="filter-btn" onclick="filterByCategory('اصيل')">منتجات الاصيل</button>
+    <button class="filter-btn" onclick="filterByCategory('جامي')">منتجات جامي</button>
+    <button class="filter-btn" onclick="filterByCategory('سما')">منتجات سما</button>
+</dialog>
     </div>
     <button class="menu-btn" onclick="toggleMenu()">☰</button>
     <div id="menu-overlay" class="menu-overlay" onclick="toggleMenu()"></div>
@@ -30,7 +40,7 @@
     <h1 class="w">"منتجاتنا بين إيديك.. اطلبها وهتجيلك لحد عندك."</h1>
     <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="🔍 ابحث عن منتج هنا..." class="search-bar">
 
-<div class="section-box">
+<div class="section-box" data-category="اصيل">
     <h1 class="section-title">منتجات الاصيل</h1>
     <hr color="black">
     <article class="A">
@@ -55,7 +65,7 @@
     </article>
 </div>
 
-<div class="section-box">
+<div class="section-box" data-category="جامي">
     <h1 class="section-title">منتجات جامي الشنواني</h1>
     <hr color="black">
     <article class="A">
@@ -71,7 +81,7 @@
     </article>
 </div>
 
-<div class="section-box">
+<div class="section-box" data-category="سما">
     <h1 class="section-title">منتجات سما جوليتا 2000</h1>
     <hr color="black">
     <article class="A">
@@ -84,7 +94,7 @@
     </article>
 </div>
 
-<div class="section-box">
+<div class="section-box" data-category="لبان">
     <h1 class="section-title">لبان</h1>
     <hr color="black">
     <article class="A">
@@ -101,7 +111,7 @@
     </article>
 </div>
 
-<div class="section-box">
+<div class="section-box" data-category="خردوات">
 
     <h1 class="section-title">خردوات</h1>
     <hr color="black">
@@ -122,6 +132,8 @@
 
     <dialog id="cart-modal">
         <h2 style="text-align:center;">🛒 سلة الطلبات</h2>
+        <input type="text" id="search-in-cart" placeholder="ابحث داخل السلة..." 
+        oninput="searchInCart()" style="display:none; width:90%; padding:10px; margin-bottom:10px;">
         <div id="cart-items"></div>
         <button id="send-btn" class="save-btn" onclick="sendOrder()">إرسال الطلب</button>
         <button class="close-btn" onclick="document.getElementById('cart-modal').close()" style="width: 100%; margin-top: 5px;">إغلاق</button>
