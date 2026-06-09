@@ -42,19 +42,21 @@ function addToCart(name, price) {
 // تحديث واجهة السلة (Modal) وإجمالي العناصر
 function updateCartUI() {
     let container = document.getElementById('cart-items');
-    let confirmBtn = document.getElementById('confirm-order-btn'); 
+    let searchBox = document.getElementById('search-in-cart'); // الخانة الجديدة
     let showFormBtn = document.getElementById('show-form-btn'); 
     
     container.innerHTML = "";
 
     if (cart.length === 0) {
         container.innerHTML = `<div style="text-align:center; padding:20px;">🛒 سلتك فارغة حالياً!</div>`;
-        if (confirmBtn) confirmBtn.style.display = 'none';
         if (showFormBtn) showFormBtn.style.display = 'none';
+        if (searchBox) searchBox.style.display = 'none'; // إخفاء البحث
         document.getElementById('cart-count').innerText = "0";
         return;
     }
 
+    // إظهار خانة البحث إذا كانت السلة غير فارغة
+    if (searchBox) searchBox.style.display = 'block';
     if (showFormBtn) showFormBtn.style.display = 'block';
 
     cart.forEach((item, index) => {
@@ -68,6 +70,7 @@ function updateCartUI() {
     });
 
     document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.quantity, 0);
+    
 }
 
 // تحديث الكمية داخل السلة
@@ -245,3 +248,32 @@ function scrollToTop() {
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js');
 }
+function searchInCart() {
+    let input = document.getElementById('search-in-cart').value.toLowerCase();
+    let items = document.querySelectorAll('.cart-item');
+
+    items.forEach(item => {
+        let name = item.querySelector('.item-name').innerText.toLowerCase();
+        // إظهار العنصر إذا كان مطابقاً للبحث، وإخفائه إذا لم يكن كذلك
+        item.style.display = name.includes(input) ? "flex" : "none";
+    });
+}
+
+function openFilterModal() {
+    document.getElementById('filter-modal').showModal();
+}
+
+function filterByCategory(category) {
+    let sections = document.querySelectorAll('.section-box');
+    
+    sections.forEach(section => {
+        if (category === 'all' || section.getAttribute('data-category') === category) {
+            section.style.display = "block"; // إظهار القسم
+        } else {
+            section.style.display = "none"; // إخفاء القسم
+        }
+    });
+    
+    document.getElementById('filter-modal').close(); // إغلاق النافذة بعد الاختيار
+}
+
