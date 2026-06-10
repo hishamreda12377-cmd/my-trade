@@ -103,6 +103,7 @@ h1.section-title {
     box-shadow: 0 8px 15px rgba(0,0,0,0.3);
     position: relative;
     overflow: hidden;
+    gap: 0.1rem;
 }
 /* إضافة لمعة خفيفة عند اللمس */
 .a1:hover {
@@ -145,10 +146,10 @@ h1.section-title {
     color: #000;
     border: none;
     padding: 5px 1px;
-    width: 75%;
+    width: 80%;
     border-radius: 10px;
     cursor: pointer;
-    font-size: 10px;
+    font-size: 9px;
     margin-top: 10px;
     transition: 0.3s;
 }
