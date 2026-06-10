@@ -96,7 +96,7 @@ h1.section-title {
 .a1 {
     background: linear-gradient(145deg, #252525, #1a1a1a);
     border-radius: 20px;
-    padding: 9px;
+    padding: 5px;
     text-align: center;
     border: 1px solid #333;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -115,7 +115,6 @@ h1.section-title {
 .a1 p {
     color:#ccc;
     font-size: 12px;
-    margin-bottom: 0.1rem;
     text-shadow: 1.5px 1.5px 2px black;
     border-radius: 10px;
     padding: 0.5rem;
@@ -130,7 +129,7 @@ h1.section-title {
     max-height: 90px;
     object-fit:fill; /* لضبط الصور بشكل متناسق */
     border-radius: 15px;
-    margin-bottom: 0px;
+    margin-bottom: -0.1px;
     box-shadow: 4px 2px 5px black;
 }
 
