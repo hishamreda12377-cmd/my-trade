@@ -16,14 +16,14 @@ body:has(dialog[open]) {
 
 header {
     background-size: fill;
-    height: 85px;
+    height: 55px;
     text-align: center;
     color: white;
     background-color: rgb(51, 46, 46);
     display: flex;
     margin-bottom: 2rem;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     margin-top: 0;
     padding-left: 2rem;
     padding-right: 2rem;
@@ -56,6 +56,7 @@ header img {
     align-items: center;
     margin-right: 3.5rem;
     border-radius: 10%;  
+    justify-self: center;
 }
 
 /* ==========================================================================
@@ -65,7 +66,7 @@ header img {
 
 h1.section-title {
     display: flex;
-    font-size: 30px;
+    font-size: 20px;
     text-shadow: 2px 2px 4px black;
     justify-content: center;
     align-items: center;
@@ -112,7 +113,7 @@ h1.section-title {
 
 .a1 p {
     color:#ccc;
-    font-size: 20px;
+    font-size: 14px;
     margin-bottom: 0.1rem;
     text-shadow: 1.5px 1.5px 2px black;
     border-radius: 10px;
@@ -124,8 +125,8 @@ h1.section-title {
 
 .a1 img {
     cursor:pointer;
-    width: 158px;
-    max-height: 160px;
+    width: 100px;
+    max-height: 90px;
     object-fit:fill; /* لضبط الصور بشكل متناسق */
     border-radius: 15px;
     margin-bottom: 0px;
@@ -143,11 +144,11 @@ h1.section-title {
     background: #ff9800;
     color: #000;
     border: none;
-    padding: 10px 0;
-    width: 85%;
+    padding: 5px 1px;
+    width: 69%;
     border-radius: 10px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 10px;
     margin-top: 10px;
     transition: 0.3s;
 }
@@ -211,37 +212,14 @@ h1.section-title {
     z-index: 999;
 }
 
-.cart-float {
-    position: fixed;
-    bottom: 260px;  
-    right: 40px;  
-    width: 60px;
-    height: 60px;
-    background-color: #ff9800;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-    z-index: 998;
-    font-size: 20px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
-.cart-float:hover {
-    background-color: #e68a00;
-    transform: scale(1.1);
-    transition: 0.3s;
-}
 
 #backToTop {
     position: fixed;
-    bottom: 80px;  
+    bottom: 110px;  
     right: 40px;  
-    width: 60px;
-    height: 60px;
+    width: 45px;
+    height: 45px;
     background-color: #cc1b1b;
     border: none;
     border-radius: 50%;
@@ -268,8 +246,7 @@ h1.section-title {
     border-radius: 25px;
     padding: 30px;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 152, 0, 0.1); /* ظل مع توهج برتقالي */
-    width: 90%;
-    max-width: 450px;
+    width: 55%;
     background: linear-gradient(145deg, #2a2a2a, #1a1a1a); /* تدرج فخم للوضع الداكن */
     text-align: center;
     animation: slideUp 0.4s ease-out; /* حركة صعود انسيابية */
@@ -303,15 +280,14 @@ dialog::backdrop {
     border:0px;
     border-radius: 25px;
     padding: 15px;
-    width: 90%;
-    max-width: 450px;
+    width: 70%;
     box-shadow: 0 15px 35px rgba(0,0,0,0.2);
     background: linear-gradient(145deg, #2a2a2a, #1a1a1a); /* تدرج فخم للوضع الداكن */
     font-size: 18px;
     text-shadow: 1px 1px 3px;
     max-height: 90vh;
     flex-direction: column;
-    animation: slideUp 0.4s ease-out; /* حركة صعود انسيابية */
+    animation: slideUp 0.6s ease-out; /* حركة صعود انسيابية */
 
 }
 
@@ -322,8 +298,7 @@ dialog::backdrop {
     padding: 30px;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 152, 0, 0.1); /* ظل مع توهج برتقالي */
     font-size: 18px;
-    width: 85%;
-    max-width: 350px;
+    width: 55%;
     text-align: center;
     color: #fff;
     animation: slideUp 0.4s ease-out; /* حركة صعود انسيابية */
@@ -384,8 +359,8 @@ dialog::backdrop {
 }
 
 .zoom-modal img {
-    max-width: 90%;
-    max-height: 80%;
+    max-width: 80%;
+    max-height: 60%;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
 }
@@ -426,7 +401,7 @@ dialog::backdrop {
 .item-name {
     font-weight: 600;
     color: #ffffff;
-    font-size: 16px;
+    font-size: 15px;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
@@ -570,19 +545,20 @@ dialog::backdrop {
    ========================================================================== */
 .toast {
     visibility: hidden;
-    min-width: 250px;
-    background-color: #333;
+    max-width: 80%;   /* مهم جداً عشان ما يخرجش بره الشاشة في الموبايل */
+    background-color: #51d736;
     color: #fff;
     text-align: center;
     border-radius: 8px;
-    padding: 16px;
+    padding: 14px 20px;
     position: fixed;
     top: 30px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 1000;
+    z-index: 9999; /* خليناها أعلى حاجة عشان ما يختفيش ورا أي عنصر */
     transition: opacity 0.5s, visibility 0.5s;
     opacity: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* إضافة ظل خفيف يخليها تبان "عائمة" وفخمة */
 }
 
 .toast.show {
@@ -597,12 +573,13 @@ footer {
     margin-bottom: 0;
     margin-top: 2rem;
     border-radius: 10px;
-    font-size: 18px;
+    font-size: 12px;
     justify-content: center;
     align-items: space-between;
     display: flex;
     flex-direction: row;
     BACKGROUND-COLOR: rgb(235, 219, 219);
+    height: 20px;
 }
 
 .copy {
