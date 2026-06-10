@@ -66,7 +66,7 @@ header img {
 
 h1.section-title {
     display: flex;
-    font-size: 16px;
+    font-size: 13px;
     text-shadow: 2px 2px 4px black;
     justify-content: center;
     align-items: center;
@@ -96,14 +96,14 @@ h1.section-title {
 .a1 {
     background: linear-gradient(145deg, #252525, #1a1a1a);
     border-radius: 20px;
-    padding: 12px;
+    padding: 9px;
     text-align: center;
     border: 1px solid #333;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: 0 8px 15px rgba(0,0,0,0.3);
     position: relative;
     overflow: hidden;
-    gap: 0.1rem;
+   
 }
 /* إضافة لمعة خفيفة عند اللمس */
 .a1:hover {
