@@ -2,7 +2,7 @@
    1. التنسيقات العامة والهيدر (موجود في أعلى الصفحة)
    ========================================================================== */
 body {
-    background-color:#fdfbf7;
+    background-color: rgb(51, 46, 46);
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
@@ -19,7 +19,7 @@ header {
     height: 85px;
     text-align: center;
     color: white;
-    background-color: rgb(241, 21, 21);
+    background-color: rgb(51, 46, 46);
     display: flex;
     margin-bottom: 2rem;
     flex-direction: row;
@@ -61,37 +61,7 @@ header img {
 /* ==========================================================================
    2. العناصر النصية والترحيب (العناوين ورسائل الموقع)
    ========================================================================== */
-h1.welcom {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    text-shadow: 2px 2px 4px black;
-    border: 3px solid black;
-    max-width: 400px;
-    justify-self: center;
-    background-color: rgb(235, 219, 219);
-    box-shadow: 4px 2px 5px black;
-    border-radius: 10px;
-    color: rgb(44, 39, 39);  
-    padding: 1rem;
-}
 
-h1.w {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    text-shadow: 2px 2px 4px black;
-    margin-bottom: 4.5rem;
-    border: 3px solid black;
-    justify-self: center;
-    background-color: rgb(235, 219, 219);
-    box-shadow: 4px 2px 5px black;
-    border-radius: 10px;
-    padding: 1rem;
-    color: rgb(44, 39, 39);  
-}
 
 h1.section-title {
     display: flex;
@@ -121,74 +91,75 @@ h1.section-title {
     justify-content: center;
 }
 
+/* تصميم كارت الصنف الفخم */
 .a1 {
-    display: flex;
-    flex-direction: column;
-    align-items: right;
-    align-content: center;
-    align-self: center;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    background-color: rgb(241, 21, 21);
-    border-radius: 10px;
-    max-width: 240px;
-    box-shadow: 4px 2px 5px maroon;
-    max-height: 400px;
-    flex-shrink: 0;
-    margin-left: 0rem;
+    background: linear-gradient(145deg, #252525, #1a1a1a);
+    border-radius: 20px;
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #333;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+}
+/* إضافة لمعة خفيفة عند اللمس */
+.a1:hover {
+    transform: translateY(-0.5px);
+    border-color: #ff9800;
+    box-shadow: 0 15px 25px rgba(255, 152, 0, 0.2);
 }
 
 .a1 p {
+    color:#ccc;
     font-size: 20px;
     margin-bottom: 0.1rem;
     text-shadow: 1.5px 1.5px 2px black;
     border-radius: 10px;
-    border: 3px solid black;
     padding: 0.5rem;
-    background-color: rgb(233, 226, 226);
     margin-top: 0.5rem;
-    margin-left: auto;
-    margin-right: auto;
+    align-items: right;
     max-width: 240px;
 }
 
 .a1 img {
     cursor:pointer;
-    width: 160px;
-    max-height: 145px;
-    border-radius: 10px;
-    margin-bottom: 0.5rem;
+    width: 158px;
+    max-height: 160px;
+    object-fit:fill; /* لضبط الصور بشكل متناسق */
+    border-radius: 15px;
+    margin-bottom: 0px;
     box-shadow: 4px 2px 5px black;
 }
+
 
 .a1 image {
     cursor: zoom-in;
     transition: transform 0.3s ease;
 }
 
+/* تصميم زر "أضف للسلة" ليكون جذاباً */
 .order-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    align-content: center;
-    align-self: center;
-    margin-top: 0.2rem;
-    margin-bottom: 0;
-    background-color: rgb(241, 21, 21);
-    border-radius: 7px;
-    padding: 0.3rem;
-    color: white;
+    background: #ff9800;
+    color: #000;
     border: none;
+    padding: 10px 0;
+    width: 85%;
+    border-radius: 10px;
     cursor: pointer;
-    text-shadow: 1px 1px 2px black;
-    font-size: 15px; 
+    font-size: 13px;
+    margin-top: 10px;
+    transition: 0.3s;
 }
 
 .order-button:hover {
     color: rgb(0, 0, 0);
     text-shadow: 2px 2px 4px rgb(70, 67, 67);
     text-decoration: underline; 
+}
+.order-button:active {
+    transform: scale(0.95);
+    background: #e68900;
 }
 
 /* ==========================================================================
@@ -291,15 +262,30 @@ h1.section-title {
 /* ==========================================================================
    5. النوافذ المنبثقة (Modals & Dialogs)
    ========================================================================== */
-dialog {
-    border: none;
+.custom-modal {
+    color:#e68900;
+    border: 1px solid rgba(255, 152, 0, 0.4); /* إطار برتقالي خفيف جداً */
     border-radius: 25px;
     padding: 30px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 152, 0, 0.1); /* ظل مع توهج برتقالي */
     width: 90%;
     max-width: 450px;
-    background: #ffffff;
-    animation: slideIn 0.4s ease-out;
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a); /* تدرج فخم للوضع الداكن */
+    text-align: center;
+    animation: slideUp 0.4s ease-out; /* حركة صعود انسيابية */
+}
+.custom-modal button{
+    background: #ff9800;
+    color: #000;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+
+}
+.custom-modal button:hover {
+    background: #e68900;
 }
 
 dialog::backdrop {
@@ -313,47 +299,78 @@ dialog::backdrop {
 }
 
 #cart-modal {
+    color:#e68900;
     border:0px;
     border-radius: 25px;
     padding: 15px;
     width: 90%;
     max-width: 450px;
     box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-    background: white;
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a); /* تدرج فخم للوضع الداكن */
     font-size: 18px;
     text-shadow: 1px 1px 3px;
     max-height: 90vh;
     flex-direction: column;
+    animation: slideUp 0.4s ease-out; /* حركة صعود انسيابية */
+
 }
 
 .phone-modal {
-    border: none;
-    border-radius: 20px;
-    padding: 25px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    font-size: 20px;
-    width: 80%;
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a); /* تدرج فخم للوضع الداكن */
+    border: 1px solid rgba(255, 152, 0, 0.4); /* إطار برتقالي خفيف جداً */
+    border-radius: 25px;
+    padding: 30px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 152, 0, 0.1); /* ظل مع توهج برتقالي */
+    font-size: 18px;
+    width: 85%;
     max-width: 350px;
     text-align: center;
-    background: #fff;
-    animation: fadeIn 0.3s;
+    color: #fff;
+    animation: slideUp 0.4s ease-out; /* حركة صعود انسيابية */
+    backdrop-filter: blur(10px);
+}
+
+/* تنسيق النصوص داخل النافذة */
+.phone-modal h3 {
+    color: #ff9800;
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+/* شكل أرقام الهاتف بشكل بطاقات صغيرة */
+.phone-modal div {
+    background: #333;
+    padding: 12px;
+    border-radius: 15px;
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* شكل زر النسخ */
+.phone-modal button {
+    background: #ff9800;
+    color: #000;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
 .phone-modal::backdrop {
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px); /* تغبيش أقوى للخلفية */
 }
 
-#profile-modal {
-    border: none;
-    border-radius: 25px;
-    padding: 30px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-    background: #ffffff;
-    animation: fadeIn 0.3s ease-out;
+/* أنيميشن صعود النافذة */
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
+
+
 
 .zoom-modal {
     position: fixed;
@@ -374,101 +391,111 @@ dialog::backdrop {
 }
 
 /* ==========================================================================
-   6. محتويات النوافذ (Inputs, Buttons, Lists داخل السلة وغيرها)
+6. محتويات النوافذ (Inputs, Buttons, Lists داخل السلة وغيرها)
    ========================================================================== */
 #cart-items {
     max-height: 240px;
     overflow-y: auto;
     margin: 20px 0;
+
 }
 
+
+/* --- تصميم عنصر المنتج داخل السلة --- */
 .cart-item {
     display: grid;
-    grid-template-columns: 1fr 15px 100px;
-    justify-content: space-between;
+    grid-template-columns: 1fr auto auto; /* توزيع ذكي: الاسم (يأخذ المساحة) - الكمية - زر الحذف */
     align-items: center;
-    background: #208d57;
+    gap: 15px;
+    
+    /* خلفية زجاجية داكنة تناسب الوضع الداكن */
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 12px;
-    border: 0px solid #eee;
-    gap: 5px;
+    margin-bottom: 12px;
+    border-radius: 15px;
+    transition: 0.6s;
 }
 
+.cart-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #ff9800; /* إطار برتقالي خفيف عند التفاعل */
+}
+
+/* --- تنسيق اسم المنتج --- */
 .item-name {
-    font-weight: bold;
-    color: #181717;
+    font-weight: 600;
+    color: #ffffff;
     font-size: 16px;
-    flex-grow: 1;
-    margin-right: 10px;
-    text-shadow: 1px 1.4px 2px;
-    font-size: larger;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
+/* --- تنسيق خانة الكمية --- */
 .quantity-input {
+    background: #1a1a1a;
+    border: 1px solid #444;
+    color: white;
     padding: 5px;
+    border-radius: 8px;
     text-align: center;
-    justify-self: center;
-    justify-content: center;
-    align-self: baseline;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 80px;
+    width: 60px;
     height: 35px;
-    font-size: medium;
     font-weight: bold;
+    outline: none;
 }
 
+/* --- تنسيق زر الحذف --- */
 .remove-btn {
-    background-color: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 5px;
-    border-radius: 5px;
+    background: rgba(255, 77, 77, 0.1); /* لون أحمر خفيف وشفاف */
+    color: #ff4d4d;
+    border: 1px solid #ff4d4d;
+    padding: 5px 12px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 12px;
-    justify-self: end;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
-    height: 30px;
+    height: 35px;
+    transition: 0.3s;
 }
 
-.whatsapp-btn {
-    width: 100%;
-    padding: 12px;
-    background: linear-gradient(135deg, #25d366, #128c7e);
+.remove-btn:hover {
+    background: #ff4d4d;
     color: white;
-    border: none;
-    border-radius: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    font-size: large
+    transform: scale(1.05);
 }
 
-.whatsapp-btn:hover {
-    transform: scale(1.02);
-    box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
-}
 
 .close-btn {
     width: 100%;
-    margin-top: 10px;
-    padding: 10px;
-    background: transparent;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    color: #000000;
+    margin-top: 15px;
+    padding: 12px;
+    
+    /* تصميم شفاف وفخم */
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    
+    color: #ffffff;
     cursor: pointer;
-    font-size: large;
-    font-weight:bold;
-    text-shadow: 0.5px 2px 3px ;
-    box-shadow: 2px 2px 2px;
+    font-size: 16px;
+    font-weight: bold;
+    
+    /* إزالة الظل القديم الثقيل وإضافة ظل ناعم */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
 }
 
-.close-btn:hover{
+.close-btn:hover {
+    /* تأثير تفاعلي عند الوقوف عليه */
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #ff9800; /* يظهر الإطار باللون البرتقالي عند التفاعل */
+    color: #ff9800;
     transform: scale(1.02);
-    box-shadow: 2px 2px 2px
+    box-shadow: 0 6px 20px rgba(255, 152, 0, 0.2);
+}
+
+.close-btn:active {
+    transform: scale(0.98); /* تأثير الضغطة */
 }
 
 .close-modal-btn {
@@ -511,19 +538,31 @@ dialog::backdrop {
 .save-btn {
     width: 100%;
     padding: 15px;
-    background: #f11515;
+    /* استخدام تدرج لوني برتقالي ذهبي ليتناسب مع هوية المتجر */
+    background: linear-gradient(135deg, #9dff00, #f57c00);
     color: white;
     border: none;
-    border-radius: 12px;
+    border-radius: 15px;
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
-    transition: 0.3s;
+    
+    /* تأثيرات إضافية للفخامة */
+    box-shadow: 0 4px 4px rgba(255, 152, 0, 0.3);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
 }
 
 .save-btn:hover {
-    background: #c90a0a;
-    transform: scale(1.02);
+    /* تأثير بروز أقوى عند الوقوف عليه */
+    transform: translateY(-3px);
+    box-shadow: 0 5px 5px rgba(255, 152, 0, 0.5);
+    filter: brightness(1.1); /* إضاءة خفيفة للزر */
+}
+
+.save-btn:active {
+    transform: translateY(0) scale(0.98);
 }
 
 /* ==========================================================================
@@ -555,6 +594,7 @@ footer {
     color: rgb(0, 0, 0);
     text-align: center;
     padding: 1rem;
+    margin-bottom: 0;
     margin-top: 2rem;
     border-radius: 10px;
     font-size: 18px;
@@ -605,60 +645,40 @@ footer {
 }
 
 .search-bar {
-    width: 90%;
-    padding: 15px;
+    width: 85%; /* زيادة العرض ليناسب الشاشات الصغيرة */
+    max-width: 500px; /* تحديد حد أقصى عشان ما يبقاش كبير زيادة على التابلت */
+    padding: 15px 20px;
     margin: 20px auto;
     display: block;
+    /* تصميم داكن زجاجي */
+    background: rgba(255, 255, 255, 0.05); /* خلفية شبه شفافة */
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff; /* النص أبيض */
     border-radius: 25px;
-    border: 2px solid #ddd;
     font-size: 16px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-align: center;
 }
 
+/* التأثير عند الضغط */
 .search-bar:focus {
     outline: none;
-    border-color: #ff9800; /* لون مناسب للحلويات */
-    box-shadow: 0 0 10px rgba(255,152,0,0.3);
+    background: rgba(255, 255, 255, 0.1); /* يصبح أفتح قليلاً */
+    border-color: #ff9800; /* الإطار البرتقالي المميز */
+    box-shadow: 0 0 15px rgba(255, 152, 0, 0.3);
+    transform: scale(1.02);
+}
+
+/* تنسيق النص التوضيحي (Placeholder) عشان يبان في الوضع الداكن */
+.search-bar::placeholder {
+    color: rgba(255, 0, 0, 0.4);
 }
 .section-box {
     margin-bottom: 30px;
     transition: all 0.3s ease;
 }
 
-
-/* 1. تصميم خانة البحث بشكل "مستقبلي" */
-#search-in-cart {
-    padding: 12px 20px;
-    margin-bottom: 15px;
-    border: 2px solid #eee;
-    border-radius: 25px; /* شكل دائري كامل */
-    font-size: 16px;
-    background: #f9f9f9;
-    transition: all 0.4s ease; /* حركة انسيابية */
-    outline: none;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
-    justify-self: center;
-}
-
-/* 2. التأثير عند الضغط (Focus) */
-#search-in-cart:focus {
-    border-color: #ff9800; /* اللون البرتقالي المميز */
-    background: #ffffff;
-    box-shadow: 0 0 10px rgba(255, 152, 0, 0.3); /* توهج خفيف */
-    transform: scale(1.02); /* تكبير بسيط عند الضغط */
-}
-
-/* 3. إضافة أيقونة بحث بداخل الخانة (اختياري لكنه احترافي) */
-/* يمكنك إضافة خلفية أيقونة للصندوق */
-#search-in-cart {
-    background-image: url('https://cdn-icons-png.flaticon.com/512/622/622669.png');
-    background-repeat: no-repeat;
-    background-position: 15px center;
-    background-size: 20px;
-    padding-left: 45px; /* مسافة للأيقونة */
-}
 .filter-btn {
     width: 100%;
     padding: 15px;
@@ -671,8 +691,139 @@ footer {
     transition: 0.3s;
     display: flex;
 }
-
 .filter-btn:hover {
     background: #ff9800;
     color: white;
 }
+/* تنسيق الشريط السفلي */
+/* تصميم الشريط السفلي "الزجاجي" */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    
+    /* تأثير الزجاج الفخم */
+    background: rgba(30, 30, 30, 0.85); 
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    
+    border-top: 1px solid rgba(255, 152, 0, 0.3); /* إطار برتقالي خفيف */
+    z-index: 9999;
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
+    padding-bottom: 5px;
+}
+
+/* تنسيق العناصر داخل الشريط */
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #aaa; /* لون رمادي هادئ في الحالة العادية */
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    padding: 5px;
+    flex: 1;
+}
+
+/* التفاعل عند الوقوف أو الضغط */
+.nav-item:hover, .nav-item:active {
+    color: #ff9800;
+    transform: translateY(-3px); /* حركة صعود خفيفة عند الضغط */
+}
+
+/* تنسيق الأيقونات */
+.nav-icon {
+    font-size: 24px;
+    margin-bottom: 3px;
+    transition: 0.3s;
+}
+
+/* إضافة تأثير "توهج" بسيط للأيقونة النشطة */
+.nav-item:hover .nav-icon {
+    text-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+}
+
+/* إضافة مساحة أسفل الموقع عشان المحتوى ميتغطاش */
+body {
+    padding-bottom: 70px;
+}
+
+.theme-toggle-btn {
+    position: fixed;
+    z-index: 998;
+    top: 145px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.4s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.theme-toggle-btn:hover {
+    transform: scale(1.1) rotate(20deg);
+    background: rgba(255, 152, 0, 0.2);
+    border-color: #ff9800;
+}
+
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #222; /* لون الخلفية */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    transition: opacity 0.5s ease;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #ff9800; /* لون التدوير */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* هذا الكلاس سنضيفه بالجافاسكريبت لإخفاء اللودر */
+.loader-hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+/* المنتجات تبدأ غير مرئية ومنزاحة قليلاً للأسفل */
+.a1 {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease-out;
+}
+
+/* الكلاس اللي هنضيفه لما العنصر يدخل في نطاق الرؤية */
+.a1.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
