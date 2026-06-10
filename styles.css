@@ -86,7 +86,7 @@ h1.section-title {
    ========================================================================== */
 .A {
     display: flex;
-    gap: 1rem;
+    gap: 0.3rem;
     margin: auto;
     flex-wrap: wrap;
     justify-content: center;
