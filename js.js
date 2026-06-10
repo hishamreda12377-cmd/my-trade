@@ -89,7 +89,11 @@ function removeItem(index) {
 
 // فتح نافذة السلة
 function openCart() {
-    document.getElementById('cart-modal').showModal();
+    let cartModal = document.getElementById('cart-modal');
+    cartModal.showModal(); // أو أياً كانت طريقة فتح المودال عندك
+
+    // هذا السطر يمنع التحديد التلقائي بمجرد فتح المودال
+    document.getElementById('search-in-cart').blur();
 }
 
 // --- وظائف إتمام الطلب (Form & EmailJS) ---
@@ -101,43 +105,47 @@ function showForm() {
     document.getElementById('show-form-btn').style.display = 'none';
 }
 
-// إرسال الطلب عبر EmailJS
 function sendOrder() {
+    // 1. فحص السلة
     if (cart.length === 0) {
-        alert("⚠️ السلة فارغة! أضف منتجات أولاً.");
+        document.getElementById('alert-modal').showModal();
         return;
     }
 
+    // 2. فحص البروفايل
     let profile = JSON.parse(localStorage.getItem('customerProfile'));
-    
     if (!profile || !profile.shop || !profile.phone || !profile.address) {
-        alert("يرجى تسجيل بياناتك أولاً!");
         document.getElementById('profile-modal').showModal();
         return;
     }
 
+    // 3. منع الضغط المتكرر
     let sendBtn = document.getElementById('send-btn');
-    if (sendBtn.disabled) return;
+    if (sendBtn.disabled) return; 
 
     sendBtn.innerText = "جاري الإرسال...";
     sendBtn.disabled = true; 
 
     let cartDetails = cart.map((i, index) => `${index + 1}. ${i.name} (الكمية: ${i.quantity})`).join('\n');
 
+    // 4. الإرسال
     emailjs.send('service_n44lkxg', 'template_s3kgnc8', {
         shop_name: profile.shop,
         phone_number: profile.phone,
         address: profile.address,
         cart_details: cartDetails
     }).then(() => {
-        alert("تم إرسال الطلب بنجاح! ✅");
-        cart = [];
-        saveCart();
-        updateCartUI();
-        document.getElementById('cart-modal').close();
+        // نستخدم setTimeout عشان نضمن إن التنفيذ ميبقاش "لحظي" ويسبب تداخل
+        setTimeout(() => {
+            document.getElementById('success-modal').showModal();
+            cart = [];
+            saveCart();
+            updateCartUI();
+            document.getElementById('cart-modal').close();
+        }, 300);
     }).catch(err => {
         console.error(err);
-        alert("حدث خطأ، تأكد من الاتصال بالإنترنت.");
+        alert("حدث خطأ، حاول مرة أخرى.");
     }).finally(() => {
         sendBtn.innerText = "إرسال الطلب";
         sendBtn.disabled = false;
@@ -244,20 +252,11 @@ function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// تفعيل الخدمة الخلفية (Service Worker)
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js');
-}
-function searchInCart() {
-    let input = document.getElementById('search-in-cart').value.toLowerCase();
-    let items = document.querySelectorAll('.cart-item');
+// // تفعيل الخدمة الخلفية (Service Worker)
+// if ('serviceWorker' in navigator) {
+//     navigator.serviceWorker.register('/service-worker.js');
+// }
 
-    items.forEach(item => {
-        let name = item.querySelector('.item-name').innerText.toLowerCase();
-        // إظهار العنصر إذا كان مطابقاً للبحث، وإخفائه إذا لم يكن كذلك
-        item.style.display = name.includes(input) ? "flex" : "none";
-    });
-}
 
 function openFilterModal() {
     document.getElementById('filter-modal').showModal();
@@ -276,4 +275,70 @@ function filterByCategory(category) {
     
     document.getElementById('filter-modal').close(); // إغلاق النافذة بعد الاختيار
 }
+
+
+// function toggleTheme() {
+//     const darkThemeLink = document.getElementById('dark-theme-link');
+//     const iconPath = document.getElementById('icon-path');
+//     const isDark = darkThemeLink.disabled === false;
+
+//     if (isDark) {
+//         darkThemeLink.disabled = true;
+//         // تغيير الأيقونة لهلال
+//         iconPath.setAttribute('d', 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z');
+//         localStorage.setItem('theme', 'light');
+//     } else {
+//         darkThemeLink.disabled = false;
+//         // تغيير الأيقونة لشمس
+//         iconPath.setAttribute('d', 'M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M17.66 6.34l1.41-1.41M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z');
+//         localStorage.setItem('theme', 'dark');
+//     }
+// }
+
+window.addEventListener("load", function() {
+    const loader = document.getElementById("loader");
+    
+    // استخدام setTimeout لإضافة تأخير (مثلاً 2000 تعني ثانيتين)
+    setTimeout(function() {
+        loader.classList.add("loader-hidden");
+        
+        loader.addEventListener("transitionend", function() {
+            loader.remove();
+        });
+    }, 2000); // يمكنك تغيير الرقم 2000 إلى أي وقت تريده (بالملي ثانية)
+});
+
+
+
+// تاثير ظهور الكروت عند التمرير (Intersection Observer)
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+        }
+    });
+});
+// تفعيل المراقبة على كل كارت منتج
+document.querySelectorAll('.a1').forEach(card => {
+    observer.observe(card);
+});
+
+
+document.querySelectorAll('dialog').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+        const dialogDimensions = modal.getBoundingClientRect();
+        if (
+            e.clientX < dialogDimensions.left ||
+            e.clientX > dialogDimensions.right ||
+            e.clientY < dialogDimensions.top ||
+            e.clientY > dialogDimensions.bottom
+        ) {
+            modal.close();
+        }
+    });
+});
+
+
+
+
 
