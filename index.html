@@ -6,16 +6,12 @@
     <title>متجر الشرقاوي | أفضل المنتجات </title>
     <meta name="description" content="متجر الشرقاوي يقدم أفضل تشكيلة من الحلويات والمنتجات عالية الجودة. اطلب الآن .">
     <meta name="keywords" content="حلويات، الشرقاوي، متجر، طلبات، تسوق اونلاين">
-    <link rel="stylesheet" href="styles.css?v=1.1">
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" id="dark-theme-link" href="dark.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-<!-- <div id="loader">
-    <div class="spinner"></div>
-</div> -->
+
     <header class="header">
-        <!-- <h1 class="main">الشرقاوي</h1> -->
         <img src="https://thf.bing.com/th/id/OIP.9kkIwwmaLBI17yUDnQgqGwHaFU?r=0&cb=thfc1falcon&rs=1&pid=ImgDetMain&o=7&rm=3" alt="" width="120" height="90"> 
     </header>
     <button id="theme-toggle" class="theme-toggle-btn" onclick="toggleTheme()">
@@ -147,6 +143,7 @@
         <div id="cart-items"></div>
         <button id="send-btn" class="save-btn" onclick="sendOrder()">إرسال الطلب</button>
         <button class="close-btn" onclick="document.getElementById('cart-modal').close()" style="width: 100%; margin-top: 5px;">إغلاق</button>
+        <span id="cart-count">0</span>
     </dialog>   
 
     <dialog id="phoneWindow" class="phone-modal">
@@ -175,11 +172,7 @@
     <button id="backToTop" onclick="scrollToTop()">⬆️</button>
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script type="text/javascript">
-       (function(){
-          emailjs.init("3xKGgYOdYgVChJOsh"); 
-       })();
-    </script>
+    
     <div id="zoom-modal" class="zoom-modal" style="display:none;" onclick="closeZoom()">
         <img id="zoomed-img" src="">
     </div>
@@ -207,8 +200,12 @@
     <p>لم تقم بإضافة أي منتجات بعد!</p>
     <button onclick="document.getElementById('alert-modal').close()">حسناً</button>
 
-    <script src="js.js?v=2.2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>    
+<script type="text/javascript">
+    (function(){
+        emailjs.init("3xKGgYOdYgVChJOsh"); 
+    })();
+    </script>
+<script src="js.js"></script>    
 
 </body>
 </html>
