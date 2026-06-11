@@ -338,7 +338,24 @@ document.querySelectorAll('dialog').forEach(modal => {
     });
 });
 
+// ضع مفاتيحك هنا
+const SUPABASE_URL = 'ضع_الرابط_هنا';
+const SUPABASE_KEY = 'ضع_مفتاح_anon_public_هنا';
 
+// إنشاء الاتصال
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// تجربة بسيطة للتأكد من الربط
+async function testConnection() {
+  const { data, error } = await supabase.from('profiles').select('*').limit(1);
+  if (error) {
+    console.error('خطأ في الاتصال:', error.message);
+  } else {
+    console.log('تم الاتصال بنجاح بقاعدة البيانات!');
+  }
+}
+
+testConnection();
 
 
 
