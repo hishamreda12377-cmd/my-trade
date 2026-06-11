@@ -105,14 +105,14 @@ function showForm() {
     document.getElementById('show-form-btn').style.display = 'none';
 }
 
-function sendOrder() {
+async function sendOrder() {
     // 1. فحص السلة
     if (cart.length === 0) {
         document.getElementById('alert-modal').showModal();
         return;
     }
 
-    // 2. فحص البروفايل
+    // 2. فحص بيانات العميل
     let profile = JSON.parse(localStorage.getItem('customerProfile'));
     if (!profile || !profile.shop || !profile.phone || !profile.address) {
         document.getElementById('profile-modal').showModal();
@@ -128,25 +128,30 @@ function sendOrder() {
 
     let cartDetails = cart.map((i, index) => `${index + 1}. ${i.name} (الكمية: ${i.quantity})`).join('\n');
 
-    // 4. الإرسال
+    // 4. الإرسال عبر EmailJS
     emailjs.send('service_n44lkxg', 'template_s3kgnc8', {
         shop_name: profile.shop,
         phone_number: profile.phone,
         address: profile.address,
         cart_details: cartDetails
-    }).then(() => {
-        // نستخدم setTimeout عشان نضمن إن التنفيذ ميبقاش "لحظي" ويسبب تداخل
-        setTimeout(() => {
-            document.getElementById('success-modal').showModal();
-            cart = [];
-            saveCart();
-            updateCartUI();
-            document.getElementById('cart-modal').close();
-        }, 300);
-    }).catch(err => {
-        console.error(err);
-        alert("حدث خطأ، حاول مرة أخرى.");
-    }).finally(() => {
+    })
+    .then(() => {
+        // إظهار رسالة النجاح وتصفير السلة
+        document.getElementById('success-modal').showModal();
+        cart = [];
+        saveCart();
+        updateCartUI();
+        document.getElementById('cart-modal').close();
+    })
+    .catch(err => {
+        console.error("خطأ في إرسال الإيميل:", err);
+        alert("حدث خطأ أثناء إرسال الطلب، يرجى المحاولة لاحقاً.");
+    })
+    .finally(() => {
+        // 5. حفظ البيانات في Supabase في الخلفية
+        // نستخدم البيانات من الـ profile المحفوظ في الـ localStorage
+        upsertCustomer(profile.phone, profile.shop, profile.address);
+        
         sendBtn.innerText = "إرسال الطلب";
         sendBtn.disabled = false;
     });
@@ -295,10 +300,20 @@ function filterByCategory(category) {
 //     }
 // }
 
+
+
 window.addEventListener("load", function() {
     const loader = document.getElementById("loader");
     
- 
+    // استخدام setTimeout لإضافة تأخير (مثلاً 2000 تعني ثانيتين)
+    setTimeout(function() {
+        loader.classList.add("loader-hidden");
+        
+        loader.addEventListener("transitionend", function() {
+            loader.remove();
+        });
+    }, 200); // يمكنك تغيير الرقم 2000 إلى أي وقت تريده (بالملي ثانية)
+});
 
 
 
@@ -330,59 +345,43 @@ document.querySelectorAll('dialog').forEach(modal => {
     });
 });
 
-// ضع مفاتيحك هنا
-const SUPABASE_URL = 'https://zqqpknqexsnskowhiwfj.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_pqSLOPEiIZxB3z1bCv3BZQ_4Dcho2OQ';
 
-// إنشاء الاتصال
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// --- تعريف المتغير في النطاق العام ---
+let supabase = null;
 
-// تجربة بسيطة للتأكد من الربط
-async function testConnection() {
-  const { data, error } = await supabase.from('profiles').select('*').limit(1);
-  if (error) {
-    console.error('خطأ في الاتصال:', error.message);
-  } else {
-    console.log('تم الاتصال بنجاح بقاعدة البيانات!');
-  }
-}
+// --- التأكد من تحميل المكتبة والاتصال ---
+window.addEventListener('load', () => {
+    // التأكد من أن window.supabase موجودة
+    if (window.supabase) {
+        supabase = window.supabase.createClient(
+            'https://zqqpknqexsnskowhiwfj.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxcXBrbnFleHNuc2tvd2hpd2ZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMzE2MjQsImV4cCI6MjA5NjcwNzYyNH0.hcD0__qb6FNhpgAyyU0F7RFZyewJrkt2WR4E79UJP9E'
+        );
+        console.log("Supabase جاهز للعمل!");
+    }
+});
 
-testConnection();
-
-async function handleCustomer(phone, name, address) {
-    // 1. نبحث عن العميل في الجدول
-    const { data: existingCustomer, error: fetchError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('phone_number', phone)
-        .single();
-
-    if (existingCustomer) {
-        console.log("أهلاً بك مجدداً يا: " + existingCustomer.full_name);
-        return existingCustomer; // العميل موجود، نرجع بياناته
-    } else {
-        // 2. إذا لم يكن موجوداً، نضيفه كعميل جديد
-        const { data: newCustomer, error: insertError } = await supabase
+// --- دالة الحفظ التي نستخدمها في sendOrder ---
+async function upsertCustomer(phone, name, address) {
+    if (!supabase) {
+        console.error("Supabase لم يتم تحميله بعد، انتظر قليلاً.");
+        return;
+    }
+    
+    try {
+        const { data, error } = await supabase
             .from('profiles')
-            .insert([{ 
-                phone_number: phone, 
-                full_name: name, 
-                address: address 
-            }])
-            .select()
-            .single();
-        
-        console.log("تم تسجيل عميل جديد بنجاح!");
-        return newCustomer;
+            .upsert(
+                { phone_number: phone, full_name: name, address: address }, 
+                { onConflict: 'phone_number' }
+            );
+
+        if (error) {
+            console.error("خطأ من Supabase:", error);
+        } else {
+            console.log("تم حفظ البيانات بنجاح!");
+        }
+    } catch (e) {
+        console.error("خطأ غير متوقع:", e);
     }
 }
-// مثال عند ضغط زر "إتمام الطلب"
-const phone = document.getElementById('phoneInput').value;
-const name = document.getElementById('nameInput').value;
-const address = document.getElementById('addressInput').value;
-
-// استدعاء الدالة
-const customer = await handleCustomer(phone, name, address);
-
-// الآن بعد ما العميل بقى عندنا (سواء قديم أو جديد)، نكمل عملية "حفظ الطلب"
-saveOrder(customer.id);
