@@ -339,8 +339,8 @@ document.querySelectorAll('dialog').forEach(modal => {
 });
 
 // ضع مفاتيحك هنا
-const SUPABASE_URL = 'sb_publishable_pqSLOPEiIZxB3z1bCv3BZQ_4Dcho2OQ ';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxcXBrbnFleHNuc2tvd2hpd2ZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMzE2MjQsImV4cCI6MjA5NjcwNzYyNH0.hcD0__qb6FNhpgAyyU0F7RFZyewJrkt2WR4E79UJP9E';
+const SUPABASE_URL = 'zqqpknqexsnskowhiwfj';
+const SUPABASE_KEY = 'sb_publishable_pqSLOPEiIZxB3z1bCv3BZQ_4Dcho2OQ';
 
 // إنشاء الاتصال
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -356,6 +356,4 @@ async function testConnection() {
 }
 
 testConnection();
-
-
 
