@@ -1,77 +1,47 @@
-/**
- * --- ملف الإعدادات والوظائف الأساسية لمتجر الشرقاوي ---
- */
-
-// --- المتغيرات العامة ---
 let cart = []; 
 let wishlist = JSON.parse(localStorage.getItem('myWishlist')) || []; 
 
-// --- تحميل البيانات عند فتح الصفحة ---
-window.onload = function() {
+// 1. استخدام حدث التحميل بشكل صحيح ومرة واحدة فقط
+window.addEventListener('load', () => {
     let savedCart = localStorage.getItem('myCart');
     if (savedCart) {
         cart = JSON.parse(savedCart);
     }
     updateCartUI(); 
-};
+});
 
-// --- وظائف السلة (إضافة، حفظ، حذف، تحديث) ---
-
-// حفظ حالة السلة في ذاكرة المتصفح
-function saveCart() {
-    localStorage.setItem('myCart', JSON.stringify(cart));
-}
-
-// إضافة منتج للسلة أو زيادة كميته
-function addToCart(name, price) {
-    showToast();
-    let clickSound = new Audio('click.mp3'); 
-    clickSound.play().catch(e => console.log("Audio play failed"));
-    
-    let existingItem = cart.find(item => item.name === name);
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        cart.push({ name: name, price: price, quantity: 1 });
-    }
-    
-    saveCart();
-    updateCartUI();
-}
-
-// تحديث واجهة السلة (Modal) وإجمالي العناصر
+// 2. دالة تحديث السلة المحمية من الأخطاء
 function updateCartUI() {
     let container = document.getElementById('cart-items');
-    let searchBox = document.getElementById('search-in-cart'); // الخانة الجديدة
-    let showFormBtn = document.getElementById('show-form-btn'); 
+    let cartCount = document.getElementById('cart-count'); 
+    
+    if (!container) return; // إذا لم توجد الحاوية، لا تفعل شيئاً
     
     container.innerHTML = "";
 
     if (cart.length === 0) {
         container.innerHTML = `<div style="text-align:center; padding:20px;">🛒 سلتك فارغة حالياً!</div>`;
-        if (showFormBtn) showFormBtn.style.display = 'none';
-        if (searchBox) searchBox.style.display = 'none'; // إخفاء البحث
-        document.getElementById('cart-count').innerText = "0";
+        if (cartCount) cartCount.innerText = "0"; // تحديث آمن للعداد
         return;
     }
-
-    // إظهار خانة البحث إذا كانت السلة غير فارغة
-    if (searchBox) searchBox.style.display = 'block';
-    if (showFormBtn) showFormBtn.style.display = 'block';
 
     cart.forEach((item, index) => {
         container.innerHTML += `
             <div class="cart-item">
                 <span class="item-name">${item.name}</span>
-                <input type="number" class="quantity-input" value="${item.quantity}" min="1" onchange="updateQty(${index}, this.value)">
-                <button class="remove-btn" onclick="removeItem(${index})">حذف</button>
+                <input type="number" value="${item.quantity}" min="1" onchange="updateQty(${index}, this.value)">
+                <button onclick="removeItem(${index})">حذف</button>
             </div>
         `;
     });
 
-    document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.quantity, 0);
-    
+    // تحديث العداد فقط إذا كان العنصر موجوداً في HTML
+    if (cartCount) {
+        cartCount.innerText = cart.reduce((sum, item) => sum + item.quantity, 0);
+    }
 }
+
+// ... اترك باقي الدوال (saveCart, addToCart, إلخ) كما هي في الأسفل ...
 
 // تحديث الكمية داخل السلة
 function updateQty(index, newQty) {
@@ -105,55 +75,24 @@ function showForm() {
     document.getElementById('show-form-btn').style.display = 'none';
 }
 
+// إرسال الطلب (بدون Supabase)
 async function sendOrder() {
-    // 1. فحص السلة
-    if (cart.length === 0) {
-        document.getElementById('alert-modal').showModal();
-        return;
-    }
-
-    // 2. فحص بيانات العميل
     let profile = JSON.parse(localStorage.getItem('customerProfile'));
-    if (!profile || !profile.shop || !profile.phone || !profile.address) {
-        document.getElementById('profile-modal').showModal();
-        return;
-    }
-
-    // 3. منع الضغط المتكرر
-    let sendBtn = document.getElementById('send-btn');
-    if (sendBtn.disabled) return; 
-
-    sendBtn.innerText = "جاري الإرسال...";
-    sendBtn.disabled = true; 
-
-    let cartDetails = cart.map((i, index) => `${index + 1}. ${i.name} (الكمية: ${i.quantity})`).join('\n');
-
-    // 4. الإرسال عبر EmailJS
+    if (!profile) { document.getElementById('profile-modal').showModal(); return; }
+    
+    let cartDetails = cart.map((i, index) => `${index + 1}. ${i.name} (${i.quantity})`).join('\n');
+    
     emailjs.send('service_n44lkxg', 'template_s3kgnc8', {
         shop_name: profile.shop,
         phone_number: profile.phone,
         address: profile.address,
         cart_details: cartDetails
-    })
-    .then(() => {
-        // إظهار رسالة النجاح وتصفير السلة
+    }).then(() => {
         document.getElementById('success-modal').showModal();
         cart = [];
         saveCart();
         updateCartUI();
         document.getElementById('cart-modal').close();
-    })
-    .catch(err => {
-        console.error("خطأ في إرسال الإيميل:", err);
-        alert("حدث خطأ أثناء إرسال الطلب، يرجى المحاولة لاحقاً.");
-    })
-    .finally(() => {
-        // 5. حفظ البيانات في Supabase في الخلفية
-        // نستخدم البيانات من الـ profile المحفوظ في الـ localStorage
-        upsertCustomer(profile.phone, profile.shop, profile.address);
-        
-        sendBtn.innerText = "إرسال الطلب";
-        sendBtn.disabled = false;
     });
 }
 
@@ -257,11 +196,6 @@ function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// // تفعيل الخدمة الخلفية (Service Worker)
-// if ('serviceWorker' in navigator) {
-//     navigator.serviceWorker.register('/service-worker.js');
-// }
-
 
 function openFilterModal() {
     document.getElementById('filter-modal').showModal();
@@ -282,38 +216,7 @@ function filterByCategory(category) {
 }
 
 
-// function toggleTheme() {
-//     const darkThemeLink = document.getElementById('dark-theme-link');
-//     const iconPath = document.getElementById('icon-path');
-//     const isDark = darkThemeLink.disabled === false;
 
-//     if (isDark) {
-//         darkThemeLink.disabled = true;
-//         // تغيير الأيقونة لهلال
-//         iconPath.setAttribute('d', 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z');
-//         localStorage.setItem('theme', 'light');
-//     } else {
-//         darkThemeLink.disabled = false;
-//         // تغيير الأيقونة لشمس
-//         iconPath.setAttribute('d', 'M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M17.66 6.34l1.41-1.41M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z');
-//         localStorage.setItem('theme', 'dark');
-//     }
-// }
-
-
-
-window.addEventListener("load", function() {
-    const loader = document.getElementById("loader");
-    
-    // استخدام setTimeout لإضافة تأخير (مثلاً 2000 تعني ثانيتين)
-    setTimeout(function() {
-        loader.classList.add("loader-hidden");
-        
-        loader.addEventListener("transitionend", function() {
-            loader.remove();
-        });
-    }, 200); // يمكنك تغيير الرقم 2000 إلى أي وقت تريده (بالملي ثانية)
-});
 
 
 
@@ -344,44 +247,3 @@ document.querySelectorAll('dialog').forEach(modal => {
         }
     });
 });
-
-
-// --- تعريف المتغير في النطاق العام ---
-let supabase = null;
-
-// --- التأكد من تحميل المكتبة والاتصال ---
-window.addEventListener('load', () => {
-    // التأكد من أن window.supabase موجودة
-    if (window.supabase) {
-        supabase = window.supabase.createClient(
-            'https://zqqpknqexsnskowhiwfj.supabase.co', 
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxcXBrbnFleHNuc2tvd2hpd2ZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMzE2MjQsImV4cCI6MjA5NjcwNzYyNH0.hcD0__qb6FNhpgAyyU0F7RFZyewJrkt2WR4E79UJP9E'
-        );
-        console.log("Supabase جاهز للعمل!");
-    }
-});
-
-// --- دالة الحفظ التي نستخدمها في sendOrder ---
-async function upsertCustomer(phone, name, address) {
-    if (!supabase) {
-        console.error("Supabase لم يتم تحميله بعد، انتظر قليلاً.");
-        return;
-    }
-    
-    try {
-        const { data, error } = await supabase
-            .from('profiles')
-            .upsert(
-                { phone_number: phone, full_name: name, address: address }, 
-                { onConflict: 'phone_number' }
-            );
-
-        if (error) {
-            console.error("خطأ من Supabase:", error);
-        } else {
-            console.log("تم حفظ البيانات بنجاح!");
-        }
-    } catch (e) {
-        console.error("خطأ غير متوقع:", e);
-    }
-}
