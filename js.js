@@ -339,7 +339,7 @@ document.querySelectorAll('dialog').forEach(modal => {
 });
 
 // ضع مفاتيحك هنا
-const SUPABASE_URL = 'zqqpknqexsnskowhiwfj';
+const SUPABASE_URL = 'https://zqqpknqexsnskowhiwfj.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_pqSLOPEiIZxB3z1bCv3BZQ_4Dcho2OQ';
 
 // إنشاء الاتصال
