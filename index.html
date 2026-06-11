@@ -9,17 +9,18 @@
     <link rel="stylesheet" href="styles.css?v=1.1">
     <link rel="stylesheet" id="dark-theme-link" href="dark.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-
+<!-- <div id="loader">
+    <div class="spinner"></div>
+</div> -->
     <header class="header">
         <!-- <h1 class="main">الشرقاوي</h1> -->
         <img src="https://thf.bing.com/th/id/OIP.9kkIwwmaLBI17yUDnQgqGwHaFU?r=0&cb=thfc1falcon&rs=1&pid=ImgDetMain&o=7&rm=3" alt="" width="120" height="90"> 
     </header>
     <button id="theme-toggle" class="theme-toggle-btn" onclick="toggleTheme()">
     <svg id="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path id="icon-path" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    <path id="icon-path" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
     </svg>
 </button>
     <div id="side-menu" class="side-menu">
@@ -39,7 +40,7 @@
     </div>
     <button class="menu-btn" onclick="toggleMenu()">☰</button>
     <div id="menu-overlay" class="menu-overlay" onclick="toggleMenu()"></div>
-    <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="🔍 ابحث عن منتج هنا..." class="search-bar">
+    <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="🔍     ابحث عن منتج هنا..." class="search-bar">
 
 <div class="section-box" data-category="اصيل">
     <h1 class="section-title">منتجات الاصيل</h1>
@@ -207,5 +208,7 @@
     <button onclick="document.getElementById('alert-modal').close()">حسناً</button>
 
     <script src="js.js?v=2.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>    
+
 </body>
 </html>
