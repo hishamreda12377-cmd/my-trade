@@ -357,3 +357,40 @@ async function testConnection() {
 
 testConnection();
 
+async function handleCustomer(phone, name, address) {
+    // 1. نبحث عن العميل في الجدول
+    const { data: existingCustomer, error: fetchError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('phone_number', phone)
+        .single();
+
+    if (existingCustomer) {
+        console.log("أهلاً بك مجدداً يا: " + existingCustomer.full_name);
+        return existingCustomer; // العميل موجود، نرجع بياناته
+    } else {
+        // 2. إذا لم يكن موجوداً، نضيفه كعميل جديد
+        const { data: newCustomer, error: insertError } = await supabase
+            .from('profiles')
+            .insert([{ 
+                phone_number: phone, 
+                full_name: name, 
+                address: address 
+            }])
+            .select()
+            .single();
+        
+        console.log("تم تسجيل عميل جديد بنجاح!");
+        return newCustomer;
+    }
+}
+// مثال عند ضغط زر "إتمام الطلب"
+const phone = document.getElementById('phoneInput').value;
+const name = document.getElementById('nameInput').value;
+const address = document.getElementById('addressInput').value;
+
+// استدعاء الدالة
+const customer = await handleCustomer(phone, name, address);
+
+// الآن بعد ما العميل بقى عندنا (سواء قديم أو جديد)، نكمل عملية "حفظ الطلب"
+saveOrder(customer.id);
