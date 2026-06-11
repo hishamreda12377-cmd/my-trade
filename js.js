@@ -298,15 +298,7 @@ function filterByCategory(category) {
 window.addEventListener("load", function() {
     const loader = document.getElementById("loader");
     
-    // استخدام setTimeout لإضافة تأخير (مثلاً 2000 تعني ثانيتين)
-    setTimeout(function() {
-        loader.classList.add("loader-hidden");
-        
-        loader.addEventListener("transitionend", function() {
-            loader.remove();
-        });
-    }, 2000); // يمكنك تغيير الرقم 2000 إلى أي وقت تريده (بالملي ثانية)
-});
+ 
 
 
 
