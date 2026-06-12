@@ -1,27 +1,62 @@
+// ==========================================================================
+// 1. المتغيرات الأساسية
+// ==========================================================================
 let cart = []; 
 let wishlist = JSON.parse(localStorage.getItem('myWishlist')) || []; 
 
-// 1. استخدام حدث التحميل بشكل صحيح ومرة واحدة فقط
-window.addEventListener('load', () => {
-    let savedCart = localStorage.getItem('myCart');
-    if (savedCart) {
-        cart = JSON.parse(savedCart);
-    }
-    updateCartUI(); 
-});
 
-// 2. دالة تحديث السلة المحمية من الأخطاء
+
+
+
+// ==========================================================================
+// 2. دوال السلة (إضافة، تحديث، حذف، حفظ)
+// ==========================================================================
+// ضعه في بداية ملف js.js
+const addToCartSound = new Audio('add-to-cart.mp3');
+
+// ثم استخدمه داخل دالة addToCart هكذا:
+function addToCart(name, price) {
+    // ... الكود ...
+    addToCartSound.currentTime = 0; // لإعادة الصوت من البداية لو ضغط العميل بسرعة
+    addToCartSound.play();
+    // ... الكود ...
+}
+// حفظ السلة في LocalStorage
+function saveCart() {
+    localStorage.setItem('myCart', JSON.stringify(cart));
+}
+
+// دالة إضافة منتج للسلة
+function addToCart(name, price) {
+    let existingItem = cart.find(item => item.name === name);
+    let audio = new Audio('click.mp3'); 
+    audio.play();
+
+    if (existingItem) {
+        existingItem.quantity += 1; // زيادة الكمية إذا كان موجوداً
+    } else {
+        cart.push({ name: name, price: price, quantity: 1 }); // إضافة كعنصر جديد
+    }
+
+    saveCart();
+    updateCartUI();
+    showToast("تمت إضافة " + name + " للسلة! 🛒");
+}
+
+// دالة تحديث السلة وإخفاء عداد الأرقام الخارجي تماماً
 function updateCartUI() {
     let container = document.getElementById('cart-items');
     let cartCount = document.getElementById('cart-count'); 
     
-    if (!container) return; // إذا لم توجد الحاوية، لا تفعل شيئاً
+    if (!container) return; // حماية ضد الأخطاء إذا لم تكن الحاوية موجودة
     
     container.innerHTML = "";
 
     if (cart.length === 0) {
         container.innerHTML = `<div style="text-align:center; padding:20px;">🛒 سلتك فارغة حالياً!</div>`;
-        if (cartCount) cartCount.innerText = "0"; // تحديث آمن للعداد
+        if (cartCount) {
+            cartCount.style.display = "none"; // إخفاء العداد تماماً عندما تكون السلة فارغة
+        }
         return;
     }
 
@@ -29,22 +64,23 @@ function updateCartUI() {
         container.innerHTML += `
             <div class="cart-item">
                 <span class="item-name">${item.name}</span>
-                <input type="number" value="${item.quantity}" min="1" onchange="updateQty(${index}, this.value)">
-                <button onclick="removeItem(${index})">حذف</button>
+                <input type="number" class="quantity-input" value="${item.quantity}" min="1" onchange="updateQty(${index}, this.value)">
+                <button class="remove-btn" onclick="removeItem(${index})">حذف</button>
             </div>
         `;
     });
 
-    // تحديث العداد فقط إذا كان العنصر موجوداً في HTML
+    // --------------------------------------------------------
+    // التعديل هنا: إخفاء العداد تماماً ومنع ظهوره
+    // --------------------------------------------------------
     if (cartCount) {
-        cartCount.innerText = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.style.display = "none"; // هذا السطر يخفي الدائرة الحمراء أو رقم العداد تماماً من الموقع
     }
 }
 
-// ... اترك باقي الدوال (saveCart, addToCart, إلخ) كما هي في الأسفل ...
-
 // تحديث الكمية داخل السلة
 function updateQty(index, newQty) {
+    if (newQty < 1) newQty = 1; // منع الكمية من أن تكون أقل من 1
     cart[index].quantity = parseInt(newQty);
     saveCart();
     updateCartUI();
@@ -60,131 +96,265 @@ function removeItem(index) {
 // فتح نافذة السلة
 function openCart() {
     let cartModal = document.getElementById('cart-modal');
-    cartModal.showModal(); // أو أياً كانت طريقة فتح المودال عندك
-
-    // هذا السطر يمنع التحديد التلقائي بمجرد فتح المودال
-    document.getElementById('search-in-cart').blur();
+    if (cartModal) {
+        cartModal.showModal();
+        let searchInput = document.getElementById('search-in-cart');
+        if (searchInput) searchInput.blur(); // منع التحديد التلقائي
+    }
 }
 
-// --- وظائف إتمام الطلب (Form & EmailJS) ---
+// ==========================================================================
+// 3. دوال إتمام الطلب وبيانات العميل
+// ==========================================================================
 
-// إظهار نموذج بيانات العميل
 function showForm() {
-    document.getElementById('order-details-form').style.display = 'block';
-    document.getElementById('confirm-order-btn').style.display = 'block';
-    document.getElementById('show-form-btn').style.display = 'none';
+    let form = document.getElementById('order-details-form');
+    let confirmBtn = document.getElementById('confirm-order-btn');
+    let showBtn = document.getElementById('show-form-btn');
+    
+    if (form) form.style.display = 'block';
+    if (confirmBtn) confirmBtn.style.display = 'block';
+    if (showBtn) showBtn.style.display = 'none';
 }
 
-// إرسال الطلب (بدون Supabase)
-async function sendOrder() {
+function sendOrder(btn) {
+    // 1. التحقق أولاً: إذا كانت السلة فارغة، نمنع الإرسال تماماً ونظهر تنبيه
+    if (cart.length === 0) {
+        let alertModal = document.getElementById('alert-modal');
+        if (alertModal) {
+            // إذا كان لديك نافذة مخصصة للتنبيهات في الـ HTML
+            alertModal.showModal();
+        } else {
+            // حل بديل سريع إذا لم يجد النافذة المخصصة
+            alert("⚠️ سلتك فارغة حالياً! من فضلك أضف منتجات أولاً.");
+        }
+        return; // إيقاف الدالة تماماً هنا ومنع بقية الكود من العمل
+    }
+
+    // 2. التحقق من بيانات بروفايل العميل
     let profile = JSON.parse(localStorage.getItem('customerProfile'));
-    if (!profile) { document.getElementById('profile-modal').showModal(); return; }
+    if (!profile) { 
+        let profileModal = document.getElementById('profile-modal');
+        if (profileModal) profileModal.showModal(); 
+        return; 
+    }
     
+    // تحديد الزر بدقة
+    let confirmBtn = btn || document.getElementById('confirm-order-btn');
+    let originalText = "تأكيد الطلب"; 
+    
+    // 3. قفل الزر فوراً وتغيير كملة جاري الإرسال لمنع الضغط المتعدد
+    if (confirmBtn) {
+        originalText = confirmBtn.innerText; 
+        confirmBtn.innerText = "...جاري الارسال";
+        confirmBtn.disabled = true; 
+        confirmBtn.style.opacity = "0.7"; 
+        confirmBtn.style.cursor = "wait"; 
+    }
+
     let cartDetails = cart.map((i, index) => `${index + 1}. ${i.name} (${i.quantity})`).join('\n');
     
-    emailjs.send('service_n44lkxg', 'template_s3kgnc8', {
-        shop_name: profile.shop,
-        phone_number: profile.phone,
-        address: profile.address,
-        cart_details: cartDetails
-    }).then(() => {
-        document.getElementById('success-modal').showModal();
-        cart = [];
-        saveCart();
-        updateCartUI();
-        document.getElementById('cart-modal').close();
-    });
+    // 4. بدء عملية الإرسال عبر EmailJS
+    if (typeof emailjs !== 'undefined') {
+        emailjs.send('service_n44lkxg', 'template_s3kgnc8', {
+            shop_name: profile.shop,
+            phone_number: profile.phone,
+            address: profile.address,
+            cart_details: cartDetails
+        }).then(() => {
+            // --- في حالة النجاح ---
+            
+            // أولاً: تفريغ السلة تماماً وحفظها فارغة في المتصفح لضمان عدم التكرار
+            cart = [];
+            saveCart();
+            updateCartUI();
+
+            // ثانياً: إغلاق نافذة السلة المفتوحة
+            let cartModal = document.getElementById('cart-modal');
+            if (cartModal) cartModal.close();
+
+            // ثالثاً: إظهار رسالة النجاح (شكراً لثقتك) مرة واحدة فقط
+            let successModal = document.getElementById('success-modal');
+            if (successModal) successModal.showModal();
+
+            // رابعاً: إعادة الزر لحالته الطبيعية (للاستخدام في المرات القادمة)
+            if (confirmBtn) {
+                confirmBtn.innerText = originalText;
+                confirmBtn.disabled = false;
+                confirmBtn.style.opacity = "1";
+                confirmBtn.style.cursor = "pointer";
+            }
+            
+        }).catch(err => {
+            // --- في حالة الفشل ---
+            alert("حدث خطأ أثناء الإرسال. يرجى التأكد من اتصال الإنترنت.");
+            console.error("EmailJS Error:", err);
+            
+            // إعادة فتح الزر ليتمكن من المحاولة مرة أخرى
+            if (confirmBtn) {
+                confirmBtn.innerText = originalText;
+                confirmBtn.disabled = false;
+                confirmBtn.style.opacity = "1";
+                confirmBtn.style.cursor = "pointer";
+            }
+        });
+    } else {
+        alert("خدمة الإرسال غير متوفرة حالياً.");
+        if (confirmBtn) {
+            confirmBtn.innerText = originalText;
+            confirmBtn.disabled = false;
+            confirmBtn.style.opacity = "1";
+            confirmBtn.style.cursor = "pointer";
+        }
+    }
 }
 
-// --- وظائف إدارة بيانات العميل (Profile) ---
+async function saveProfile() {
 
-// حفظ بيانات العميل في LocalStorage
-function saveProfile() {
     let shop = document.getElementById('user-shop').value.trim();
     let phone = document.getElementById('user-phone').value.trim();
     let address = document.getElementById('user-address').value.trim();
 
     if (!/^01[0-9]{9}$/.test(phone)) {
         alert("⚠️ رقم الهاتف غير صحيح!");
-        document.getElementById('user-phone').focus();
         return;
     }
 
-    if (shop === "" || address === "") {
-        alert("⚠️ من فضلك، املأ اسم المحل والعنوان!");
+    if (!shop || !address) {
+        alert("⚠️ أكمل جميع البيانات");
         return;
     }
 
-    localStorage.setItem('customerProfile', JSON.stringify({ shop, phone, address }));
+    let profileData = {
+        shop,
+        phone,
+        address
+    };
+
+    // حفظ محلي
+    localStorage.setItem(
+        "customerProfile",
+        JSON.stringify(profileData)
+    );
+
+    // حفظ في Supabase
+    const { data, error } = await supabaseClient
+        .from("profiles")
+        .insert([
+            {
+                shop_name: shop,
+                phone_number: phone,
+                address: address
+            }
+        ]);
+
+    if (error) {
+        console.error(error);
+        alert("خطأ أثناء الحفظ في قاعدة البيانات");
+        return;
+    }
+
+    console.log(data);
+
     document.getElementById('profile-modal').close();
+
+    showToast("تم حفظ البيانات بنجاح ✅");
 }
 
-// تحميل بيانات العميل عند فتح الصفحة
-window.addEventListener('load', () => {
-    let savedProfile = localStorage.getItem('customerProfile');
-    if (savedProfile) {
-        let profile = JSON.parse(savedProfile);
-        if(document.getElementById('user-shop')) {
-            document.getElementById('user-shop').value = profile.shop;
-            document.getElementById('user-phone').value = profile.phone;
-            document.getElementById('user-address').value = profile.address;
-        }
-    }
-});
+// ==========================================================================
+// 4. دوال واجهة المستخدم (بحث، قوائم، تكبير صور، تنبيهات)
+// ==========================================================================
 
-// --- وظائف العرض والتحكم في الواجهة ---
-
-// تكبير الصور
-function zoomImage(imgSrc) {
-    if (document.getElementById("side-menu").style.width === "250px") return;
-    let modal = document.getElementById('zoom-modal');
-    document.getElementById('zoomed-img').src = imgSrc;
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden'; 
-}
-
-function closeZoom() {
-    document.getElementById('zoom-modal').style.display = 'none';
-    document.body.style.overflow = 'auto'; 
-}
-
-// إظهار رسالة التنبيه المؤقتة (Toast)
-function showToast() {
+function showToast(message) {
     let toast = document.getElementById("toast");
     if(toast) {
+        toast.innerText = message || "تمت العملية بنجاح";
         toast.classList.add("show");
         setTimeout(() => toast.classList.remove("show"), 3000);
     }
 }
 
-// البحث عن المنتجات
-function searchProducts() {
-    let input = document.getElementById('searchInput').value.toLowerCase();
-    document.querySelectorAll('.section-box').forEach(section => {
-        let items = section.getElementsByClassName('a1');
-        let hasMatch = false;
-        for (let i = 0; i < items.length; i++) {
-            let name = items[i].getElementsByTagName('p')[0].innerText.toLowerCase();
-            items[i].style.display = name.includes(input) ? "" : "none";
-            if(name.includes(input)) hasMatch = true;
-        }
-        section.style.display = hasMatch ? "" : "none";
-    });
+function zoomImage(imgSrc) {
+    let sideMenu = document.getElementById("side-menu");
+    if (sideMenu && sideMenu.style.width === "250px") return;
+    
+    let modal = document.getElementById('zoom-modal');
+    let zoomedImg = document.getElementById('zoomed-img');
+    if (modal && zoomedImg) {
+        zoomedImg.src = imgSrc;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; 
+    }
 }
 
-// القائمة الجانبية
+function closeZoom() {
+    let modal = document.getElementById('zoom-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; 
+    }
+}
+
 function toggleMenu() {
     let menu = document.getElementById("side-menu");
     let overlay = document.getElementById("menu-overlay");
+    if (!menu || !overlay) return;
+    
     let isOpen = menu.style.width === "250px";
     menu.style.width = isOpen ? "0" : "250px";
     overlay.style.display = isOpen ? "none" : "block";
 }
 
-// دوال عامة (النسخ، العودة للأعلى)
+function searchProducts() {
+    let inputEl = document.getElementById('searchInput');
+    if (!inputEl) return;
+    
+    let input = inputEl.value.toLowerCase();
+    
+    document.querySelectorAll('.section-box').forEach(section => {
+        let items = section.getElementsByClassName('a1');
+        let hasMatch = false;
+        
+        for (let i = 0; i < items.length; i++) {
+            let pTags = items[i].getElementsByTagName('p');
+            // التأكد من وجود نص داخل الكارت لمنع الأخطاء
+            let name = pTags.length > 0 ? pTags[0].innerText.toLowerCase() : "";
+            
+            if (name.includes(input)) {
+                items[i].style.display = "";
+                hasMatch = true;
+            } else {
+                items[i].style.display = "none";
+            }
+        }
+        section.style.display = hasMatch ? "" : "none";
+    });
+}
+
 function copyNumber(elementId) {
-    let text = document.getElementById(elementId).innerText;
-    navigator.clipboard.writeText(text).then(() => alert("تم نسخ الرقم: " + text));
+    let el = document.getElementById(elementId);
+    if (el) {
+        let text = el.innerText;
+        navigator.clipboard.writeText(text).then(() => showToast("تم نسخ الرقم: " + text));
+    }
+}
+
+function openFilterModal() {
+    let modal = document.getElementById('filter-modal');
+    if (modal) modal.showModal();
+}
+
+function filterByCategory(category) {
+    let sections = document.querySelectorAll('.section-box');
+    sections.forEach(section => {
+        if (category === 'all' || section.getAttribute('data-category') === category) {
+            section.style.display = "block";
+        } else {
+            section.style.display = "none";
+        }
+    });
+    let modal = document.getElementById('filter-modal');
+    if (modal) modal.close(); 
 }
 
 window.onscroll = () => {
@@ -196,44 +366,41 @@ function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// ==========================================================================
+// 5. أحداث التحميل والمراقبة (تحدث مرة واحدة عند فتح الصفحة)
+// ==========================================================================
 
-function openFilterModal() {
-    document.getElementById('filter-modal').showModal();
-}
+window.addEventListener('load', () => {
+    // 1. تحميل بيانات السلة
+    let savedCart = localStorage.getItem('myCart');
+    if (savedCart) {
+        try { cart = JSON.parse(savedCart); } catch(e) { cart = []; }
+    }
+    updateCartUI(); 
 
-function filterByCategory(category) {
-    let sections = document.querySelectorAll('.section-box');
-    
-    sections.forEach(section => {
-        if (category === 'all' || section.getAttribute('data-category') === category) {
-            section.style.display = "block"; // إظهار القسم
-        } else {
-            section.style.display = "none"; // إخفاء القسم
-        }
+    // 2. تحميل بيانات العميل
+    let savedProfile = localStorage.getItem('customerProfile');
+    if (savedProfile) {
+        try {
+            let profile = JSON.parse(savedProfile);
+            if(document.getElementById('user-shop')) document.getElementById('user-shop').value = profile.shop || "";
+            if(document.getElementById('user-phone')) document.getElementById('user-phone').value = profile.phone || "";
+            if(document.getElementById('user-address')) document.getElementById('user-address').value = profile.address || "";
+        } catch(e) { console.error("Error loading profile"); }
+    }
+
+    // 3. تأثير ظهور الكروت عند التمرير (Intersection Observer)
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('show');
+            }
+        });
     });
-    
-    document.getElementById('filter-modal').close(); // إغلاق النافذة بعد الاختيار
-}
-
-
-
-
-
-
-// تاثير ظهور الكروت عند التمرير (Intersection Observer)
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('show');
-        }
-    });
-});
-// تفعيل المراقبة على كل كارت منتج
-document.querySelectorAll('.a1').forEach(card => {
-    observer.observe(card);
+    document.querySelectorAll('.a1').forEach(card => observer.observe(card));
 });
 
-
+// إغلاق النوافذ المنبثقة (Dialogs) عند الضغط خارجها
 document.querySelectorAll('dialog').forEach(modal => {
     modal.addEventListener('click', (e) => {
         const dialogDimensions = modal.getBoundingClientRect();
@@ -247,3 +414,70 @@ document.querySelectorAll('dialog').forEach(modal => {
         }
     });
 });
+
+
+
+// ==========================================
+// الإضافات الاحترافية (تقييمات + تحميل صور + PWA)
+// ==========================================
+
+// window.addEventListener('load', () => {
+    
+//     // 1. تشغيل التحميل المتأخر للصور (Skeleton)
+//     const images = document.querySelectorAll('.a1 img');
+//     images.forEach(img => {
+//         img.classList.add('skeleton'); // إضافة الوميض
+        
+//         // أول ما الصورة تخلص تحميل، نشيل الوميض
+//         if (img.complete) {
+//             img.classList.remove('skeleton');
+//         } else {
+//             img.addEventListener('load', () => img.classList.remove('skeleton'));
+//         }
+//     });
+
+    // // 2. إضافة التقييمات الوهمية الذكية تحت اسم كل منتج
+    // const cards = document.querySelectorAll('.a1');
+    // cards.forEach(card => {
+    //     let pTag = card.querySelector('p'); // البحث عن اسم المنتج
+    //     if (pTag && !card.querySelector('.stars-container')) {
+    //         // توليد رقم عشوائي بين 4.3 و 5.0
+    //         let rating = (Math.random() * (5.0 - 4.3) + 4.3).toFixed(1); 
+    //         // توليد عدد أشخاص قيموا المنتج (من 30 لـ 250 شخص)
+    //         let reviewsCount = Math.floor(Math.random() * 220) + 30; 
+            
+    //         let starsHTML = `
+    //             <div class="stars-container">
+    //                 ⭐⭐⭐⭐⭐ <span class="stars-text">(${rating} - ${reviewsCount} تقييم)</span>
+    //             </div>
+    //         `;
+    //         // زرع التقييم تحت اسم المنتج مباشرة
+    //         pTag.insertAdjacentHTML('afterend', starsHTML);
+    //     }
+    // });
+
+    // 3. تسجيل تطبيق الويب (PWA) عشان ينزل على الموبايل
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+        .then(() => console.log("تم تفعيل التطبيق بنجاح!"))
+        .catch(err => console.log("خطأ في تفعيل التطبيق: ", err));
+    }
+// // نقوم بسحب دالة createClient مباشرة من المكتبة المحملة
+// const { createClient } = supabase;
+
+// const SUPABASE_URL = 'https://zqqpknqexsnskowhiwfj.supabase.co';
+// const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxcXBrbnFleHNuc2tvd2hpd2ZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMzE2MjQsImV4cCI6MjA5NjcwNzYyNH0.hcD0__qb6FNhpgAyyU0F7RFZyewJrkt2WR4E79UJP9E';
+
+// // إنشاء العميل
+// const supabaseClient = createClient('https://zqqpknqexsnskowhiwfj.supabase.co',  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxcXBrbnFleHNuc2tvd2hpd2ZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMzE2MjQsImV4cCI6MjA5NjcwNzYyNH0.hcD0__qb6FNhpgAyyU0F7RFZyewJrkt2WR4E79UJP9E');
+
+const SUPABASE_URL = "https://zqqpknqexsnskowhiwfj.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxcXBrbnFleHNuc2tvd2hpd2ZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMzE2MjQsImV4cCI6MjA5NjcwNzYyNH0.hcD0__qb6FNhpgAyyU0F7RFZyewJrkt2WR4E79UJP9E";
+
+const supabaseClient = supabase.createClient(
+    'https://zqqpknqexsnskowhiwfj.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxcXBrbnFleHNuc2tvd2hpd2ZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMzE2MjQsImV4cCI6MjA5NjcwNzYyNH0.hcD0__qb6FNhpgAyyU0F7RFZyewJrkt2WR4E79UJP9E'
+);
+
+
+
