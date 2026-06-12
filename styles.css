@@ -1,5 +1,5 @@
 /* ==========================================================================
-   1. التنسيقات العامة والهيدر (موجود في أعلى الصفحة)
+    1. التنسيقات العامة والهيدر (موجود في أعلى الصفحة)
    ========================================================================== */
 body {
     background-color: rgb(51, 46, 46);
@@ -34,19 +34,13 @@ header {
     margin-right: 0rem;
     border-radius: 0  0 15px 15px;
     flex-shrink: 0;
-    font-size: 20px;
     box-shadow: 2px 4px 5px black; 
     position: fixed; 
     top: 0;
     left: 0;
     width: 100%;
+    height: fit-content;
     z-index: 1000;
-}
-
-.main {
-    margin-left: 3rem;
-    text-shadow: 2px 2px 4px black; 
-    font-size: 32px;   
 }
 
 header img {
@@ -57,10 +51,11 @@ header img {
     margin-right: 3.5rem;
     border-radius: 10%;  
     justify-self: center;
+    align-self: center;
 }
 
 /* ==========================================================================
-   2. العناصر النصية والترحيب (العناوين ورسائل الموقع)
+    2. العناصر النصية والترحيب (العناوين ورسائل الموقع)
    ========================================================================== */
 
 
@@ -82,8 +77,9 @@ h1.section-title {
 }
 
 /* ==========================================================================
-   3. تنسيق بطاقات المنتجات (شكل كل صنف وزر الإضافة)
+    3. تنسيق بطاقات المنتجات (شكل كل صنف وزر الإضافة)
    ========================================================================== */
+
 .A {
     display: flex;
     gap: 0.5rem;
@@ -102,9 +98,9 @@ h1.section-title {
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: 0 8px 15px rgba(0,0,0,0.3);
     position: relative;
-    overflow: hidden;
-    transform: translateY(-0.5px);
     border-color: #ff9800;
+    width: 20%;
+    max-width: 125px;
 
 }
 /* إضافة لمعة خفيفة عند اللمس */
@@ -115,27 +111,23 @@ h1.section-title {
 }
 
 .a1 p {
+    font-size:10px;
     color:#ccc;
-    font-size: 10px;
     text-shadow: 1.5px 1.5px 2px black;
     border-radius: 10px;
     padding: 0.5rem;
-    align-items: right;
-    max-width: 240px;
-    margin-bottom: -10px;
-
+    align-items:center;
 }
 
 .a1 img {
     cursor:pointer;
     width: 90px;
-    max-height: 90px;
+    height: 90px;
     object-fit:fill; /* لضبط الصور بشكل متناسق */
     border-radius: 15px;
-    margin-bottom: -17px;
+    margin-bottom: -10px;
     box-shadow: 4px 2px 5px black;
 }
-
 
 .a1 image {
     cursor: zoom-in;
@@ -144,6 +136,7 @@ h1.section-title {
 
 /* تصميم زر "أضف للسلة" ليكون جذاباً */
 .order-button {
+    font-size: xx-small;
     background: #ff9800;
     color: #000;
     border: none;
@@ -151,9 +144,8 @@ h1.section-title {
     width: 80%;
     border-radius: 10px;
     cursor: pointer;
-    font-size: 9px;
-    margin-top: 10px;
     transition: 0.3s;
+    
 }
 
 .order-button:hover {
@@ -167,7 +159,7 @@ h1.section-title {
 }
 
 /* ==========================================================================
-   4. القائمة الجانبية والأزرار العائمة (Menu, Cart, BackToTop)
+    4. القائمة الجانبية والأزرار العائمة (Menu, Cart, BackToTop)
    ========================================================================== */
 .menu-btn {
     position: fixed;
@@ -215,8 +207,6 @@ h1.section-title {
     z-index: 999;
 }
 
-
-
 #backToTop {
     position: fixed;
     bottom: 110px;  
@@ -241,7 +231,7 @@ h1.section-title {
 }
 
 /* ==========================================================================
-   5. النوافذ المنبثقة (Modals & Dialogs)
+    5. النوافذ المنبثقة (Modals & Dialogs)
    ========================================================================== */
 .custom-modal {
     color:#e68900;
@@ -289,6 +279,7 @@ dialog::backdrop {
     font-size: 18px;
     text-shadow: 1px 1px 3px;
     max-height: 90vh;
+    max-width: 350px;
     flex-direction: column;
     animation: slideUp 0.6s ease-out; /* حركة صعود انسيابية */
 
@@ -552,11 +543,11 @@ dialog::backdrop {
 }
 
 /* ==========================================================================
-   7. عناصر التنبيهات والتذييل (Toast, Footer)
+    7. عناصر التنبيهات والتذييل (Toast, Footer)
    ========================================================================== */
 .toast {
     visibility: hidden;
-    max-width: 80%;   /* مهم جداً عشان ما يخرجش بره الشاشة في الموبايل */
+    min-width: 60px;   /* مهم جداً عشان ما يخرجش بره الشاشة في الموبايل */
     background-color: #51d736;
     color: #fff;
     text-align: center;
@@ -767,39 +758,7 @@ body {
     border-color: #ff9800;
 }
 
-#loader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #222; /* لون الخلفية */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 99999;
-    transition: opacity 0.5s ease;
-}
 
-.spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #ff9800; /* لون التدوير */
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* هذا الكلاس سنضيفه بالجافاسكريبت لإخفاء اللودر */
-.loader-hidden {
-    opacity: 0;
-    visibility: hidden;
-}
 /* المنتجات تبدأ غير مرئية ومنزاحة قليلاً للأسفل */
 .a1 {
     opacity: 0;
@@ -816,4 +775,69 @@ body {
 
 
 
+h1.section-title {
+    font-size: clamp(1rem, 2.5vw, 1.5rem); 
+    /* هذا يعني: لا يقل عن 1rem، ولا يزيد عن 1.5rem، ويأخذ حجمه حسب الشاشة */
+}
 
+
+
+/* =========================================
+   1. شارات المنتجات (Badges)
+========================================= */
+.a1 {
+    position: relative; /* ضروري عشان الشارة تظبط على الكارت */
+    overflow: hidden;
+}
+
+.product-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    z-index: 2;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* ألوان الشارات المختلفة عشان تنوع براحتك */
+.badge-new { background: linear-gradient(45deg, #ff0055, #ff0000); } /* أحمر - جديد */
+.badge-hot { background: linear-gradient(45deg, #ff9800, #ff5722); } /* برتقالي - الأكثر مبيعاً */
+.badge-sale { background: linear-gradient(45deg, #00c6ff, #0072ff); } /* أزرق - خصم */
+
+/* =========================================
+   2. التحميل المتأخر (Skeleton Loader)
+========================================= */
+.skeleton {
+    background: #333; /* لون رمادي غامق يليق مع الدارك مود */
+    background-image: linear-gradient(90deg, #333 0px, #444 40px, #333 80px);
+    background-size: 200%;
+    animation: shimmer 1.5s infinite linear;
+}
+
+@keyframes shimmer {
+    0% { background-position: -100% 0; }
+    100% { background-position: 100% 0; }
+}
+
+/* =========================================
+   3. شكل التقييمات (Stars)
+========================================= */
+/* .stars-container { */
+    /* color: #f1c40f; لون ذهبي */
+    /* font-size: 13px; */
+    /* margin: 5px 0; */
+    /* display: flex; */
+    /* justify-content: center; */
+    /* align-items: center; */
+    /* gap: 5px; */
+/* } */
+
+
+/* .stars-text {
+    color: #bdc3c7;
+    font-size: 11px;
+} */
