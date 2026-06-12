@@ -61,7 +61,7 @@ header img {
 
 h1.section-title {
     display: flex;
-    font-size: 13px;
+    font-size: 12px;
     text-shadow: 2px 2px 4px black;
     justify-content: center;
     align-items: center;
@@ -99,8 +99,7 @@ h1.section-title {
     box-shadow: 0 8px 15px rgba(0,0,0,0.3);
     position: relative;
     border-color: #ff9800;
-    width: 20%;
-    max-width: 125px;
+    width: 90px;
 
 }
 /* إضافة لمعة خفيفة عند اللمس */
@@ -136,7 +135,7 @@ h1.section-title {
 
 /* تصميم زر "أضف للسلة" ليكون جذاباً */
 .order-button {
-    font-size: xx-small;
+    font-size: 8px;
     background: #ff9800;
     color: #000;
     border: none;
@@ -775,12 +774,6 @@ body {
 
 
 
-h1.section-title {
-    font-size: clamp(1rem, 2.5vw, 1.5rem); 
-    /* هذا يعني: لا يقل عن 1rem، ولا يزيد عن 1.5rem، ويأخذ حجمه حسب الشاشة */
-}
-
-
 
 /* =========================================
    1. شارات المنتجات (Badges)
@@ -841,3 +834,127 @@ h1.section-title {
     color: #bdc3c7;
     font-size: 11px;
 } */
+
+
+/* نافذة الطلبات */
+.orders-modal{
+    width: 350px;
+    max-width: 650px;
+    border: none;
+    border-radius: 18px;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(0,0,0,.15);
+    
+}
+/* انيميشن ظهور النافذة */
+.orders-modal {
+    animation: orderModalShow 0.35s ease;
+}
+
+/* انيميشن الخلفية */
+.orders-modal::backdrop {
+    animation: backdropFade 0.35s ease;
+}
+
+@keyframes orderModalShow {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes backdropFade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.orders-modal::backdrop{
+    background: rgba(0,0,0,.45);
+}
+
+/* العنوان */
+.orders-title{
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* قائمة الطلبات */
+.orders-list{
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+/* كارت الطلب */
+.order-card{
+    border: 1px solid #e5e5e5;
+    border-radius: 14px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #fafafa;
+}
+
+/* الهيدر */
+.order-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* رقم الطلب */
+.order-id{
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* الحالة */
+.order-status{
+    background: #28a745;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+/* المنتجات */
+.order-items{
+    text-align: right;
+    line-height: 2;
+    font-size: 15px;
+    white-space: pre-line;
+}
+
+/* زر الإغلاق */
+.orders-close-btn{
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #dc3545;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.orders-close-btn:hover{
+    opacity: .9;
+}
