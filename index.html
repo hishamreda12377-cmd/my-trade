@@ -12,6 +12,18 @@
     <link rel="manifest" href="sw.js">    
 </head>
 <body>
+    <div id="loader">
+    <div class="loader-box">
+        <img src="https://thf.bing.com/th/id/OIP.9kkIwwmaLBI17yUDnQgqGwHaFU?r=0&cb=thfc1falcon&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Logo">
+        <h2>جارى التحميل...</h2>
+        <div class="loader-bar">
+            <div class="loader-progress"></div>
+        </div>
+    </div>
+</div>
+    <!-- <div class="hero-banner">
+    خصم 20% على جميع الطلبات اليوم
+</div> -->
         <header class="header">
         <img src="https://thf.bing.com/th/id/OIP.9kkIwwmaLBI17yUDnQgqGwHaFU?r=0&cb=thfc1falcon&rs=1&pid=ImgDetMain&o=7&rm=3" alt="" width="120" height="90"> 
     </header>
@@ -151,8 +163,8 @@
 
     <dialog id="phoneWindow" class="phone-modal">
         <h3>📱 أرقام التواصل</h3>
-        <div style="margin: 10px 0;"><span id="num1">01062063425</span><button onclick="copyNumber('num1')" style="margin-right: 10px; cursor: pointer;">نسخ 📋</button></div>
-        <div style="margin: 10px 0;"><span id="num2">01202530125</span><button onclick="copyNumber('num2')" style="margin-right: 10px; cursor: pointer;">نسخ 📋</button></div>
+        <div style="margin: 10px 0;"><span id="num1">01062063425</span><button onclick="copyNumber('num1')" style="margin-right: 10px; cursor: pointer; font-size: xx-small;">نسخ 📋</button></div>
+        <div style="margin: 10px 0;"><span id="num2">01202530125</span><button onclick="copyNumber('num2')" style="margin-right: 10px; cursor: pointer; font-size: xx-small;">نسخ 📋</button></div>
         <hr>
         <button class="close-btn" onclick="document.getElementById('phoneWindow').close()">إغلاق</button>
     </dialog>
@@ -198,11 +210,14 @@
     <p>شكراً لثقتك، سيتم التواصل معك في أقرب وقت.</p>
     <button onclick="document.getElementById('success-modal').close()">حسناً</button>
 </dialog>
-<dialog id="alert-modal" class="custom-modal">
+
+
+<dialog id="alert-modal" class="success-modal">
     <h3 style="color: #ff4d4d;">⚠️ السلة فارغة</h3>
     <p>لم تقم بإضافة أي منتجات بعد!</p>
-    <button onclick="document.getElementById('alert-modal').close()">حسناً</button>
+    <button class="close-btn" onclick="document.getElementById('alert-modal').close()">حسناً</button>
 </dialog>
+
 
 <dialog id="orders-modal" class="orders-modal">
 
