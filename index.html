@@ -21,10 +21,12 @@
     </svg>
 </button>
     <div id="side-menu" class="side-menu">
-        <a class="a" href="#" onclick="document.getElementById('profile-modal').showModal()">بياناتي</a>
+        <a class="a" href="#" onclick="document.getElementById('profile-modal').showModal()">بياناتي</a> 
+        <a class="a" onclick="showMyOrders()">📦طلباتي</a>
         <a class="a" href="#" onclick="document.getElementById('phoneWindow').showModal()">اتصل بنا</a>
         <a class="a" href="https://wa.me/201281525050" target="_blank">واتساب</a>
         <a class="a" href="#" onclick="openFilterModal()">فرز المنتجات</a>
+
 
 <dialog id="filter-modal" class="custom-modal">
     <button class="close-modal-btn" onclick="document.getElementById('filter-modal').close()">×</button>
@@ -200,21 +202,31 @@
     <h3 style="color: #ff4d4d;">⚠️ السلة فارغة</h3>
     <p>لم تقم بإضافة أي منتجات بعد!</p>
     <button onclick="document.getElementById('alert-modal').close()">حسناً</button>
+</dialog>
+
+<dialog id="orders-modal" class="orders-modal">
+
+    <h3 class="orders-title">طلباتي</h3>
+
+    <div id="orders-list" class="orders-list">
+        جاري التحميل...
+    </div>
+
+    <button class="orders-close-btn"
+        onclick="document.getElementById('orders-modal').close()">
+        إغلاق
+    </button>
+
+</dialog>
 
 <script type="text/javascript">
     (function(){
         emailjs.init("3xKGgYOdYgVChJOsh"); 
     })();
     </script>
+    
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js.js"></script>    
 
     </body>
 </html>
-
-
-
-
-
-
-
