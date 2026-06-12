@@ -116,116 +116,142 @@ function showForm() {
     if (confirmBtn) confirmBtn.style.display = 'block';
     if (showBtn) showBtn.style.display = 'none';
 }
+async function sendOrder(btn) {
 
-function sendOrder(btn) {
-    // 1. التحقق أولاً: إذا كانت السلة فارغة، نمنع الإرسال تماماً ونظهر تنبيه
+    // التحقق من السلة
     if (cart.length === 0) {
         let alertModal = document.getElementById('alert-modal');
+
         if (alertModal) {
-            // إذا كان لديك نافذة مخصصة للتنبيهات في الـ HTML
             alertModal.showModal();
         } else {
-            // حل بديل سريع إذا لم يجد النافذة المخصصة
-            alert("⚠️ سلتك فارغة حالياً! من فضلك أضف منتجات أولاً.");
+            alert("⚠️ سلتك فارغة حالياً!");
         }
-        return; // إيقاف الدالة تماماً هنا ومنع بقية الكود من العمل
+
+        return;
     }
 
-    // 2. التحقق من بيانات بروفايل العميل
+    // التحقق من البروفايل
     let profile = JSON.parse(localStorage.getItem('customerProfile'));
-    if (!profile) { 
+
+    if (!profile) {
         let profileModal = document.getElementById('profile-modal');
-        if (profileModal) profileModal.showModal(); 
-        return; 
+
+        if (profileModal) {
+            profileModal.showModal();
+        }
+
+        return;
     }
-    
-    // تحديد الزر بدقة
+
     let confirmBtn = btn || document.getElementById('confirm-order-btn');
-    let originalText = "تأكيد الطلب"; 
-    
-    // 3. قفل الزر فوراً وتغيير كملة جاري الإرسال لمنع الضغط المتعدد
+    let originalText = "تأكيد الطلب";
+
     if (confirmBtn) {
-        originalText = confirmBtn.innerText; 
-        confirmBtn.innerText = "...جاري الارسال";
-        confirmBtn.disabled = true; 
-        confirmBtn.style.opacity = "0.7"; 
-        confirmBtn.style.cursor = "wait"; 
+        originalText = confirmBtn.innerText;
+
+        confirmBtn.innerText = "...جاري الإرسال";
+        confirmBtn.disabled = true;
+        confirmBtn.style.opacity = "0.7";
+        confirmBtn.style.cursor = "wait";
     }
 
-    let cartDetails = cart.map((i, index) => `${index + 1}. ${i.name} (${i.quantity})`).join('\n');
-    
-    // 4. بدء عملية الإرسال عبر EmailJS
-    if (typeof emailjs !== 'undefined') {
-        emailjs.send('service_n44lkxg', 'template_s3kgnc8', {
-            shop_name: profile.shop,
-            phone_number: profile.phone,
-            address: profile.address,
-            cart_details: cartDetails
-        }).then(() => {
-            // --- في حالة النجاح ---
-            
-            // أولاً: تفريغ السلة تماماً وحفظها فارغة في المتصفح لضمان عدم التكرار
-            cart = [];
-            saveCart();
-            updateCartUI();
+    try {
 
-            // ثانياً: إغلاق نافذة السلة المفتوحة
-            let cartModal = document.getElementById('cart-modal');
-            if (cartModal) cartModal.close();
+        // تفاصيل المنتجات
+        let cartDetails = cart.map((item, index) =>
+            `${index + 1}. ${item.name} (${item.quantity})`
+        ).join('\n');
 
-            // ثالثاً: إظهار رسالة النجاح (شكراً لثقتك) مرة واحدة فقط
-            let successModal = document.getElementById('success-modal');
-            if (successModal) successModal.showModal();
+        // =====================================
+        // حفظ الطلب في Supabase
+        // =====================================
 
-            // رابعاً: إعادة الزر لحالته الطبيعية (للاستخدام في المرات القادمة)
-            if (confirmBtn) {
-                confirmBtn.innerText = originalText;
-                confirmBtn.disabled = false;
-                confirmBtn.style.opacity = "1";
-                confirmBtn.style.cursor = "pointer";
+        const { data, error } = await supabaseClient
+            .from('orders')
+            .insert([
+                {
+                    shop_name: profile.shop,
+                    phone_number: profile.phone,
+                    cart_details: cartDetails,
+                    address: profile.address,
+                }
+            ]);
+
+        if (error) {
+            throw error;
+        }
+
+        console.log("Supabase Success:", data);
+
+        // =====================================
+        // إرسال EmailJS
+        // =====================================
+
+        await emailjs.send(
+            'service_n44lkxg',
+            'template_s3kgnc8',
+            {
+                shop_name: profile.shop,
+                phone_number: profile.phone,
+                address: profile.address,
+                cart_details: cartDetails
             }
-            
-        }).catch(err => {
-            // --- في حالة الفشل ---
-            alert("حدث خطأ أثناء الإرسال. يرجى التأكد من اتصال الإنترنت.");
-            console.error("EmailJS Error:", err);
-            
-            // إعادة فتح الزر ليتمكن من المحاولة مرة أخرى
-            if (confirmBtn) {
-                confirmBtn.innerText = originalText;
-                confirmBtn.disabled = false;
-                confirmBtn.style.opacity = "1";
-                confirmBtn.style.cursor = "pointer";
-            }
-        });
-    } else {
-        alert("خدمة الإرسال غير متوفرة حالياً.");
+        );
+
+        // =====================================
+        // نجاح العملية
+        // =====================================
+
+        cart = [];
+        saveCart();
+        updateCartUI();
+
+        let cartModal = document.getElementById('cart-modal');
+        if (cartModal) cartModal.close();
+
+        let successModal = document.getElementById('success-modal');
+        if (successModal) successModal.showModal();
+
+    } catch (err) {
+
+        console.error("ORDER ERROR:", err);
+
+        alert(
+            "حدث خطأ أثناء إرسال الطلب:\n" +
+            (err.message || "خطأ غير معروف")
+        );
+
+    } finally {
+
         if (confirmBtn) {
             confirmBtn.innerText = originalText;
             confirmBtn.disabled = false;
             confirmBtn.style.opacity = "1";
             confirmBtn.style.cursor = "pointer";
         }
+
     }
 }
-
 async function saveProfile() {
 
-    let shop = document.getElementById('user-shop').value.trim();
-    let phone = document.getElementById('user-phone').value.trim();
-    let address = document.getElementById('user-address').value.trim();
+    const shop = document.getElementById('user-shop').value.trim();
+    const phone = document.getElementById('user-phone').value.trim();
+    const address = document.getElementById('user-address').value.trim();
 
+    // التحقق من رقم الهاتف
     if (!/^01[0-9]{9}$/.test(phone)) {
         alert("⚠️ رقم الهاتف غير صحيح!");
         return;
     }
 
+    // التحقق من البيانات
     if (!shop || !address) {
         alert("⚠️ أكمل جميع البيانات");
         return;
     }
 
-    let profileData = {
+    const profileData = {
         shop,
         phone,
         address
@@ -237,28 +263,37 @@ async function saveProfile() {
         JSON.stringify(profileData)
     );
 
-    // حفظ في Supabase
-    const { data, error } = await supabaseClient
-        .from("profiles")
-        .insert([
-            {
-                shop_name: shop,
-                phone_number: phone,
-                address: address
-            }
-        ]);
+    localStorage.setItem("userShop", shop);
+    localStorage.setItem("userPhone", phone);
+    localStorage.setItem("userAddress", address);
 
-    if (error) {
-        console.error(error);
-        alert("خطأ أثناء الحفظ في قاعدة البيانات");
-        return;
+    try {
+
+        // حفظ في Supabase
+        const { error } = await supabaseClient
+            .from("profiles")
+            .insert([
+                {
+                    shop_name: shop,
+                    phone_number: phone,
+                    address: address
+                }
+            ]);
+
+        if (error) {
+            console.error(error);
+            alert("خطأ أثناء الحفظ في قاعدة البيانات");
+            return;
+        }
+
+        showToast("تم حفظ البيانات بنجاح ✅");
+
+    } catch (err) {
+
+        console.error(err);
+        alert("حدث خطأ غير متوقع");
+
     }
-
-    console.log(data);
-
-    document.getElementById('profile-modal').close();
-
-    showToast("تم حفظ البيانات بنجاح ✅");
 }
 
 // ==========================================================================
@@ -465,6 +500,109 @@ document.querySelectorAll('dialog').forEach(modal => {
 // // نقوم بسحب دالة createClient مباشرة من المكتبة المحملة
 // const { createClient } = supabase;
 
+
+async function showMyOrders() {
+
+    const profile =
+        JSON.parse(localStorage.getItem("customerProfile"));
+
+    if (!profile) {
+        alert("يرجى حفظ بياناتك أولاً");
+        return;
+    }
+
+    const modal =
+        document.getElementById("orders-modal");
+
+    const list =
+        document.getElementById("orders-list");
+
+    list.innerHTML = "جاري تحميل الطلبات...";
+
+    modal.showModal();
+
+    const { data, error } = await supabaseClient
+        .from("orders")
+        .select("*")
+        .eq("phone_number", profile.phone)
+        .order("id", { ascending: false });
+
+    if (error) {
+
+        list.innerHTML =
+            "حدث خطأ أثناء تحميل الطلبات";
+
+        console.error(error);
+
+        return;
+    }
+
+    if (!data.length) {
+
+        list.innerHTML =
+            "لا توجد طلبات سابقة";
+
+        return;
+    }
+
+list.innerHTML = data.map(order => `
+    <div class="order-card">
+
+        <div class="order-header">
+            <span class="order-id">طلب #${order.id}</span>
+
+            <span class="order-status">
+                ${order.status || "جديد"}
+            </span>
+        </div>
+
+        <div class="order-items">
+            ${order.cart_details.replace(/\n/g,'<br>')}
+        </div>
+
+    </div>
+`).join("");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // const SUPABASE_URL = 'https://zqqpknqexsnskowhiwfj.supabase.co';
 // const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxcXBrbnFleHNuc2tvd2hpd2ZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMzE2MjQsImV4cCI6MjA5NjcwNzYyNH0.hcD0__qb6FNhpgAyyU0F7RFZyewJrkt2WR4E79UJP9E';
 
@@ -478,6 +616,3 @@ const supabaseClient = supabase.createClient(
     'https://zqqpknqexsnskowhiwfj.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxcXBrbnFleHNuc2tvd2hpd2ZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMzE2MjQsImV4cCI6MjA5NjcwNzYyNH0.hcD0__qb6FNhpgAyyU0F7RFZyewJrkt2WR4E79UJP9E'
 );
-
-
-
