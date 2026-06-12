@@ -5,7 +5,19 @@ let cart = [];
 let wishlist = JSON.parse(localStorage.getItem('myWishlist')) || []; 
 
 
+window.addEventListener("load",()=>{
 
+    setTimeout(()=>{
+
+        document.getElementById("loader").style.opacity="0";
+
+        setTimeout(()=>{
+            document.getElementById("loader").remove();
+        },500);
+
+    },3000);
+
+});
 
 
 // ==========================================================================
@@ -287,6 +299,7 @@ async function saveProfile() {
         }
 
         showToast("تم حفظ البيانات بنجاح ✅");
+        document.getElementById("profile-modal").close();
 
     } catch (err) {
 
@@ -563,44 +576,6 @@ list.innerHTML = data.map(order => `
     </div>
 `).join("");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // const SUPABASE_URL = 'https://zqqpknqexsnskowhiwfj.supabase.co';
