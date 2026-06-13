@@ -543,8 +543,9 @@ dialog::backdrop {
     7. عناصر التنبيهات والتذييل (Toast, Footer)
    ========================================================================== */
 .toast {
+    font-size: x-small;
     visibility: hidden;
-    min-width: 60px;   /* مهم جداً عشان ما يخرجش بره الشاشة في الموبايل */
+    min-width: 50px;   /* مهم جداً عشان ما يخرجش بره الشاشة في الموبايل */
     background-color: #51d736;
     color: #fff;
     text-align: center;
@@ -554,7 +555,7 @@ dialog::backdrop {
     top: 30px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 9999; /* خليناها أعلى حاجة عشان ما يختفيش ورا أي عنصر */
+    z-index: 999999; /* خليناها أعلى حاجة عشان ما يختفيش ورا أي عنصر */
     transition: opacity 0.5s, visibility 0.5s;
     opacity: 0;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* إضافة ظل خفيف يخليها تبان "عائمة" وفخمة */
@@ -835,7 +836,11 @@ body {
 }
 
 /* قائمة الطلبات */
-.orders-list{
+.orders-list{   
+    justify-self: center;
+    justify-self: center;
+    align-items: center;
+    justify-content: center;
     max-height: 300px;
     overflow-y: auto;
     padding: 5px;
@@ -843,7 +848,9 @@ body {
 }
 
 /* كارت الطلب */
-.order-card{
+.order-card{ 
+    align-items: center;
+    justify-content: center;
     border: 1px solid #e5e5e5;
     border-radius: 14px;
     padding: 15px;
@@ -992,7 +999,8 @@ body {
     }
 }
 
-.success-modal {
+.success-modal { 
+   
     color:#e68900;
     border: 1px solid rgba(255, 152, 0, 0.4); /* إطار برتقالي خفيف جداً */
     border-radius: 25px;
@@ -1002,4 +1010,105 @@ body {
     background: linear-gradient(145deg, #2a2a2a, #1a1a1a); /* تدرج فخم للوضع الداكن */
     text-align: center;
     animation: slideUp 0.4s ease-out; /* حركة صعود انسيابية */
+}
+
+
+
+
+.order-progress{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    margin:20px 0;
+    width:100%;
+}
+
+.step{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    position:relative;
+    z-index:2;
+}
+
+.circle{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:#444;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:14px;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.step.active .circle{
+    background:#28a745;
+    box-shadow:0 0 12px rgba(40,167,69,.5);
+}
+
+.step span{
+    margin-top:6px;
+    font-size:11px;
+    color:#000000;
+    text-align:center;
+}
+
+.line{
+    flex:1;
+    height:4px;
+    background:#444;
+    margin-top:15px;
+    border-radius:20px;
+}
+
+.line.active{
+    background:#28a745;
+}
+
+.circle{
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+    0%{
+        box-shadow:0 0 0 0 rgba(40,167,69,.7);
+    }
+
+    70%{
+        box-shadow:0 0 0 10px rgba(40,167,69,0);
+    }
+
+    100%{
+        box-shadow:0 0 0 0 rgba(40,167,69,0);
+    }
+}
+
+
+.spans{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top:35px;
+
+}
+
+.stars{
+display: flex;
+justify-content: center;
+gap:5px;
+}
+
+.stars span{
+    font-size:30px;
+    cursor:pointer;
+    color:#777;
+    transition:.2s;
+}
+
+.stars span.active{
+    color:#ffc107;
 }
