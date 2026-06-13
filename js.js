@@ -244,6 +244,7 @@ async function sendOrder(btn) {
         }
 
     }
+    
 }
 async function saveProfile() {
 
@@ -283,20 +284,23 @@ async function saveProfile() {
 
         // حفظ في Supabase
         const { error } = await supabaseClient
-            .from("profiles")
-            .insert([
-                {
-                    shop_name: shop,
-                    phone_number: phone,
-                    address: address
-                }
-            ]);
+    .from("profiles")
+    .upsert(
+        {
+            shop_name: shop,
+            phone_number: phone,
+            address: address
+        },
+        {
+            onConflict: "phone_number"
+        }
+    );
 
         if (error) {
-            console.error(error);
-            alert("خطأ أثناء الحفظ في قاعدة البيانات");
-            return;
-        }
+    console.error(error);
+    alert(error.message);
+    return;
+}
 
         showToast("تم حفظ البيانات بنجاح ✅");
         document.getElementById("profile-modal").close();
@@ -513,6 +517,49 @@ document.querySelectorAll('dialog').forEach(modal => {
 // // نقوم بسحب دالة createClient مباشرة من المكتبة المحملة
 // const { createClient } = supabase;
 
+function getTracker(status){
+
+    let step = 1;
+
+    if(status === "قيد المراجعة") step = 1;
+    if(status === "جاري التجهيز") step = 2;
+    if(status === "خرج للتوصيل") step = 3;
+    if(status === "تم التسليم") step = 4;
+
+    return `
+
+    <div class="order-progress">
+
+        <div class="step ${step>=1?'active':''}">
+            <div class="circle">✓</div>
+            <span>قيد المراجعة</span>
+        </div>
+
+        <div class="line ${step>=2?'active':''}"></div>
+
+        <div class="step ${step>=2?'active':''}">
+            <div class="circle">✓</div>
+            <span>جاري التجهيز</span>
+        </div>
+
+        <div class="line ${step>=3?'active':''}"></div>
+
+        <div class="step ${step>=3?'active':''}">
+            <div class="circle">✓</div>
+            <span>خرج للتوصيل</span>
+        </div>
+
+        <div class="line ${step>=4?'active':''}"></div>
+
+        <div class="step ${step>=4?'active':''}">
+            <div class="circle">✓</div>
+            <span>تم التسليم</span>
+        </div>
+
+    </div>
+
+    `;
+}
 
 async function showMyOrders() {
 
@@ -559,23 +606,91 @@ async function showMyOrders() {
     }
 
 list.innerHTML = data.map(order => `
-    <div class="order-card">
 
-        <div class="order-header">
-            <span class="order-id">طلب #${order.id}</span>
+<div class="order-card">
 
-            <span class="order-status">
-                ${order.status || "جديد"}
-            </span>
-        </div>
+    <div class="order-header">
+        <div class="order-id">طلب #${order.id}</div>
+        <div class="order-status">${order.status}</div>
+    </div>
 
-        <div class="order-items">
-            ${order.cart_details.replace(/\n/g,'<br>')}
-        </div>
+    ${getTracker(order.status)}
+
+    <div class="order-items">
+        ${order.cart_details}
+    </div>
+
+${
+order.status === "تم التسليم"
+? `
+<div class="rating-box">
+        <span class="spans">ما مدي تقييمك للطلب ؟</span>
+
+    <div class="stars">
+        <span onclick="rateOrder(${order.id},1,this)"
+        class="${order.rating >= 1 ? 'active' : ''}">★</span>
+
+        <span onclick="rateOrder(${order.id},2,this)"
+        class="${order.rating >= 2 ? 'active' : ''}">★</span>
+
+        <span onclick="rateOrder(${order.id},3,this)"
+        class="${order.rating >= 3 ? 'active' : ''}">★</span>
+
+        <span onclick="rateOrder(${order.id},4,this)"
+        class="${order.rating >= 4 ? 'active' : ''}">★</span>
+
+        <span onclick="rateOrder(${order.id},5,this)"
+        class="${order.rating >= 5 ? 'active' : ''}">★</span>
 
     </div>
+
+</div>
+`
+: ""
+}
+
+</div>
+
 `).join("");
 }
+
+
+async function rateOrder(orderId, rating, element){
+
+    const stars =
+        element.parentElement.querySelectorAll("span");
+
+    stars.forEach((star,index)=>{
+
+        if(index < rating){
+            star.classList.add("active");
+        }else{
+            star.classList.remove("active");
+        }
+
+    });
+
+    const { error } = await supabaseClient
+        .from("orders")
+        .update({
+            rating: rating
+        })
+        .eq("id", orderId);
+
+    if(error){
+        console.error(error);
+        alert("فشل حفظ التقييم");
+        return;
+    }
+
+    showToast("تم حفظ التقييم ⭐");
+}
+
+
+
+
+
+
 
 
 // const SUPABASE_URL = 'https://zqqpknqexsnskowhiwfj.supabase.co';
