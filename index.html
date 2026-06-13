@@ -32,12 +32,14 @@
     <path id="icon-path" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
     </svg>
 </button>
+
     <div id="side-menu" class="side-menu">
         <a class="a" href="#" onclick="document.getElementById('profile-modal').showModal()">بياناتي</a> 
-        <a class="a" onclick="showMyOrders()">📦طلباتي</a>
+        <a class="a" href="#" onclick="showMyOrders()">📦طلباتي</a>
         <a class="a" href="#" onclick="document.getElementById('phoneWindow').showModal()">اتصل بنا</a>
         <a class="a" href="https://wa.me/201281525050" target="_blank">واتساب</a>
         <a class="a" href="#" onclick="openFilterModal()">فرز المنتجات</a>
+    </div>
 
 
 <dialog id="filter-modal" class="custom-modal">
@@ -183,11 +185,13 @@
         <p class="copy">جميع الحقوق محفوظة &copy; 2024 </p>
     </footer>
 
+<!-- اشعار الاضافة الي السلة -->
     <div id="toast" class="toast">تمت الإضافة إلى السلة بنجاح! ✅</div>
     <button id="backToTop" onclick="scrollToTop()">⬆️</button>
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     
+    <!-- الشريط السفلي -->
     <div id="zoom-modal" class="zoom-modal" style="display:none;" onclick="closeZoom()">
         <img id="zoomed-img" src="">
     </div>
@@ -205,34 +209,38 @@
         <span class="nav-icon">🛒</span><small>السلة</small>
     </a>
 </nav>
+
+<!-- اشعار ارسال الطلب -->
 <dialog id="success-modal" class="custom-modal">
     <h3>تم إرسال الطلب بنجاح! ✅</h3>
     <p>شكراً لثقتك، سيتم التواصل معك في أقرب وقت.</p>
     <button onclick="document.getElementById('success-modal').close()">حسناً</button>
 </dialog>
 
-
+<!-- اشعار السلة فارغة -->
 <dialog id="alert-modal" class="success-modal">
     <h3 style="color: #ff4d4d;">⚠️ السلة فارغة</h3>
     <p>لم تقم بإضافة أي منتجات بعد!</p>
     <button class="close-btn" onclick="document.getElementById('alert-modal').close()">حسناً</button>
 </dialog>
 
-
+<!-- نافذة الطلبات -->
 <dialog id="orders-modal" class="orders-modal">
-
     <h3 class="orders-title">طلباتي</h3>
-
     <div id="orders-list" class="orders-list">
         جاري التحميل...
     </div>
-
     <button class="orders-close-btn"
         onclick="document.getElementById('orders-modal').close()">
         إغلاق
     </button>
-
 </dialog>
+
+
+
+
+
+
 
 <script type="text/javascript">
     (function(){
