@@ -10,7 +10,7 @@ body {
     padding: 0;
 }
 /* منع التمرير عندما يكون الـ dialog مفتوحاً */
-body:has(dialog[open]) {
+body:has(dialog [open]) {
     overflow: hidden;
 }
 
@@ -185,7 +185,7 @@ h1.section-title {
     padding-top: 80px;
     z-index: 1000;
     box-shadow: 5px 0 15px rgba(0,0,0,0.5);
-    overflow-x: hidden;
+    overflow-x:hidden;
     white-space: nowrap;
 }
 
@@ -620,8 +620,7 @@ footer {
 }
 
 .search-bar {
-    width: 85%; /* زيادة العرض ليناسب الشاشات الصغيرة */
-    max-width: 500px; /* تحديد حد أقصى عشان ما يبقاش كبير زيادة على التابلت */
+    width: 65%; /* زيادة العرض ليناسب الشاشات الصغيرة */
     padding: 15px 20px;
     margin: 20px auto;
     display: block;
@@ -999,14 +998,13 @@ body {
     }
 }
 
-.success-modal { 
-   
+.success-modal {
     color:#e68900;
     border: 1px solid rgba(255, 152, 0, 0.4); /* إطار برتقالي خفيف جداً */
     border-radius: 25px;
     padding: 30px;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 152, 0, 0.1); /* ظل مع توهج برتقالي */
-    width: 25%;
+    width: 50%;
     background: linear-gradient(145deg, #2a2a2a, #1a1a1a); /* تدرج فخم للوضع الداكن */
     text-align: center;
     animation: slideUp 0.4s ease-out; /* حركة صعود انسيابية */
@@ -1112,3 +1110,8 @@ gap:5px;
 .stars span.active{
     color:#ffc107;
 }
+
+
+
+
+
